@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# npm configuration (may contain auth tokens)
+.npmrc
+
 # macOS-specific files
 .DS_Store
 
