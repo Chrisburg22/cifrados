@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blowfish: Diagrama de Feistel Mejorado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA; /* Light Gray Background */
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 1rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+        .block-display {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease-in-out;
+            word-wrap: break-word;
+        }
+        .log-section {
+            background-color: #e9ecef;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        .color-primary { color: #0D47A1; }
+        .bg-primary-light { background-color: #BBDEFB; }
+        .bg-primary-dark { background-color: #0D47A1; }
+        .text-primary-dark { color: #0D47A1; }
+        
+        .feistel-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .feistel-step-label {
+            position: absolute;
+            left: -10px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #0D47A1;
+            border-radius: 0.5rem 0 0.5rem 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-primary-dark">Blowfish: Key Scheduling y Cifrado Multi-Bloque</h1>
+            <p class="text-lg text-slate-600 mt-2">Observa cómo la clave secreta genera las subclaves antes de cifrar el mensaje.</p>
+        </header>
+
+        <!-- Controles de Entrada -->
+        <div class="card mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="col-span-2">
+                <label for="plainText" class="block text-sm font-medium text-slate-700">Mensaje a Cifrar (Texto)</label>
+                <input type="text" id="plainText" value="ejecutaralamanecer" class="mt-1 block w-full border border-slate-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-slate-500 mt-1">Se divide en bloques de 8 caracteres (64 bits).</p>
+            </div>
+            <div class="col-span-1">
+                <label for="secretKey" class="block text-sm font-medium text-slate-700">Clave Secreta (Texto)</label>
+                <input type="text" id="secretKey" value="skurt" class="mt-1 block w-full border border-slate-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-slate-500 mt-1">De 4 a 56 caracteres.</p>
+            </div>
+            <div class="col-span-1">
+                <button onclick="initMultiBlockSimulation()" id="startButton" class="w-full bg-primary-dark text-white py-2 rounded-lg font-semibold hover:bg-[#1565C0] transition duration-200 shadow-lg">
+                    Iniciar Simulación
+                </button>
+            </div>
+        </div>
+
+        <!-- Generación de Claves (Key Scheduling) -->
+        <div class="card mb-8">
+            <h2 class="text-2xl font-bold text-primary-dark mb-4 border-b pb-2">1. Key Scheduling: Generación de 16 Subclaves Únicas</h2>
+            
+            <div class="log-section mb-4">
+                <h3 class="text-lg font-semibold text-slate-700 mb-2">Proceso de "Entrenamiento" de la Clave Secreta (<span id="keyText">---</span>)</h3>
+                <p class="text-sm text-slate-600 mb-3">
+                    <span class="font-bold">Paso 1:</span> Se inicializan P1-P18 y S-Boxes con valores de $\pi$.
+                    <br>
+                    <span class="font-bold">Paso 2:</span> Tu clave (HEX: <span id="keyHex" class="font-mono text-green-700">---</span>) se combina con estos valores iniciales mediante XOR.
+                    <br>
+                    <span class="font-bold">Paso 3:</span> El algoritmo se auto-cifra 521 veces, usando cada salida para reemplazar los valores de la P-Array y S-Boxes. <span class="font-bold text-red-700">Esto asegura que las subclaves son únicas.</span>
+                </p>
+            </div>
+            
+            <!-- P-Keys Display -->
+             <div class="log-section">
+                <h3 class="text-lg font-bold text-green-800 mb-2">16 Subclaves Generadas (P1 a P16)</h3>
+                <div id="pKeysList" class="block-display bg-green-50 text-green-800 text-sm grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                    <!-- P Keys will be rendered here -->
+                    Esperando clave...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conversión ASCII y Bloques -->
+        <div class="card mb-8">
+            <h2 class="text-2xl font-bold text-primary-dark mb-4 border-b pb-2">2. Conversión de Entrada y División en Bloques</h2>
+            
+            <div class="log-section">
+                 <h3 class="text-lg font-semibold text-slate-700 mb-2">Mensaje Original (<span id="msgLength">---</span> caracteres)</h3>
+                <div id="messageBlocks" class="space-y-3">
+                    <p class="text-slate-500">Introduce un mensaje para ver la división.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Simulación de Ronda Única -->
+        <div class="card">
+             <h2 class="text-2xl font-bold text-primary-dark mb-4 border-b pb-2">3. Red de Feistel: Cifrado Bloque a Bloque</h2>
+             
+            <!-- Navegación de Bloques -->
+            <div class="flex justify-between items-center mb-4 p-2 bg-blue-50 rounded-lg">
+                <button onclick="changeBlock(-1)" id="prevBlockButton" class="text-primary-dark font-semibold py-1 px-3 rounded-md hover:bg-blue-200 disabled:opacity-50" disabled>
+                    ← Bloque Anterior
+                </button>
+                <h3 class="text-xl font-bold text-primary-dark" id="currentBlockTitle">Bloque de Mensaje: 1/1</h3>
+                <button onclick="changeBlock(1)" id="nextBlockButton" class="text-primary-dark font-semibold py-1 px-3 rounded-md hover:bg-blue-200 disabled:opacity-50" disabled>
+                    Bloque Siguiente →
+                </button>
+            </div>
+
+            <!-- Panel de Ronda Activa (Feistel) -->
+            <div class="log-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 id="roundTitle" class="text-xl font-bold text-primary-dark">Ronda 0: Bloque Inicial</h4>
+                    <div class="text-sm font-semibold text-slate-500" id="modeDisplay">Modo: Cifrado</div>
+                </div>
+                
+                <!-- Diagrama de Red de Feistel MEJORADO -->
+                <div class="bg-white p-4 mt-6 rounded-xl shadow-inner border border-blue-200">
+                    <h5 class="font-bold text-lg text-primary-dark mb-3 text-center">Flujo de Datos en la Ronda <span id="diag_current_round">---</span></h5>
+                    
+                    <div class="grid grid-cols-5 items-center gap-2 text-center text-sm">
+                        <!-- Lado Izquierdo (Li) -->
+                        <div class="col-span-2 flex flex-col items-center">
+                            <p class="font-medium text-red-600 mb-1">Entrada Izquierda ($L_{i}$)</p>
+                            <div id="diag_L_in" class="w-full block-display bg-red-100 text-red-800 border border-red-300 text-xs py-1">L_IN</div>
+                        </div>
+                        
+                        <!-- Flecha y P-Key -->
+                        <div class="col-span-1 text-2xl font-black text-slate-400">
+                            →
+                        </div>
+                        
+                        <!-- Lado Derecho (Ri) -->
+                        <div class="col-span-2 flex flex-col items-center">
+                            <p class="font-medium text-blue-600 mb-1">Entrada Derecha ($R_{i}$)</p>
+                            <div id="diag_R_in" class="w-full block-display bg-blue-100 text-blue-800 border border-blue-300 text-xs py-1">R_IN</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-5 items-center gap-2 mt-4">
+                        <!-- Columna Izquierda (Flujo L) -->
+                        <div class="col-span-2 flex flex-col items-center">
+                            <div class="text-lg font-bold text-red-800 pt-2 pb-1">PARTE CRÍTICA (XOR)</div>
+                            <div class="text-sm font-mono text-red-600" id="diag_L_half_in">L_IN (Mitad superior)</div>
+                        </div>
+
+                        <!-- Columna Central (F-Function) -->
+                        <div class="col-span-1 flex flex-col items-center relative p-2 bg-purple-50 rounded-lg border-2 border-purple-400">
+                            <p class="text-xs font-semibold text-yellow-700 mb-1">Subclave P</p>
+                            <div id="diag_P_key" class="font-mono text-xs bg-yellow-100 p-1 rounded">P_KEY</div>
+                            <div class="text-lg font-black text-slate-700 my-1">F</div>
+                            <p class="text-xs font-semibold text-blue-700 mb-1">Entrada R</p>
+                            <div id="diag_F_input" class="font-mono text-xs bg-blue-100 p-1 rounded">R_IN (Mitad inferior)</div>
+                        </div>
+                        
+                        <!-- Columna Derecha (Flujo R) -->
+                        <div class="col-span-2 flex flex-col items-center">
+                            <div class="text-lg font-bold text-blue-800 pt-2 pb-1">INTERCAMBIO</div>
+                             <div class="text-sm font-mono text-blue-600">R_IN (Pasa directamente a L)</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-5 items-center gap-2 mt-4">
+                        <!-- Columna Izquierda (XOR) -->
+                        <div class="col-span-2 flex flex-col items-center relative">
+                            <p class="font-bold text-lg text-red-800">Resultado XOR</p>
+                            <p class="text-xs text-slate-500">($L_{i} \oplus F(R_{i}, P)$)</p>
+                            <div id="diag_R_new_half" class="w-full block-display bg-red-200 text-red-900 border border-red-400 text-xs py-1 mt-1">NEW_R_HALF</div>
+                        </div>
+                        
+                        <!-- Flecha Abajo de F -->
+                        <div class="col-span-1 flex flex-col items-center">
+                            <div id="diag_F_output" class="font-mono text-xs bg-purple-300 text-purple-900 p-1 rounded border-2 border-purple-500 font-bold">F-OUT (Mezcla)</div>
+                            <div class="text-2xl font-black text-slate-400 my-1">$\oplus$</div>
+                        </div>
+
+                         <!-- Columna Derecha (Intercambio) -->
+                        <div class="col-span-2 flex flex-col items-center">
+                            <p class="font-bold text-lg text-blue-800">Intercambio Directo</p>
+                            <p class="text-xs text-slate-500">($R_{i} \to L_{i+1}$)</p>
+                            <div id="diag_L_out" class="w-full block-display bg-blue-200 text-blue-900 border border-blue-400 text-xs py-1 mt-1">NEW_L</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center border-t border-slate-300 pt-4">
+                        <p class="font-bold text-xl text-primary-dark mb-2">Bloque para la Siguiente Ronda ($L_{i+1} || R_{i+1}$):</p>
+                        <div class="flex justify-center space-x-4">
+                            <div class="text-center">
+                                <p class="text-sm font-medium text-blue-700">Nuevo L ($R_{i}$)</p>
+                                <p id="diag_L_out_val" class="font-mono text-base text-blue-800 font-bold">---</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm font-medium text-red-700">Nuevo R ($L_{i} \oplus F(...)$)</p>
+                                <p id="diag_R_out_val" class="font-mono text-base text-red-800 font-bold">---</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin Diagrama Mejorado -->
+
+                <!-- Bloques L y R (Visualización principal) -->
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 my-6">
+                    <div class="text-center">
+                        <p class="text-sm font-medium text-red-600 mb-1">Bloque Izquierdo (L) - 32 bits</p>
+                        <div id="L_block" class="block-display bg-red-100 text-red-800 border border-red-300">---</div>
+                    </div>
+                    <div class="text-center text-2xl font-black text-slate-400">
+                        →
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm font-medium text-blue-600 mb-1">Bloque Derecho (R) - 32 bits</p>
+                        <div id="R_block" class="block-display bg-blue-100 text-blue-800 border border-blue-300">---</div>
+                    </div>
+                </div>
+
+                <!-- Log de la Ronda Actual -->
+                <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-2 text-sm">
+                    <h5 class="font-bold text-primary-dark">Paso a Paso de la Ronda Activa:</h5>
+                    <p id="logPKey" class="text-slate-700">1. Subclave Usada (P): ---</p>
+                    <p id="logFOut" class="text-slate-700">2. Función F (Mezcla Secreta): ---</p>
+                    <p id="logXOR" class="text-slate-700">3. Combinación XOR: ---</p>
+                </div>
+                
+                <!-- Controles de Navegación de Ronda -->
+                <div class="mt-6 flex justify-between items-center">
+                    <button onclick="prevRound()" id="prevButton" class="bg-slate-300 text-slate-700 py-2 px-4 rounded-lg font-semibold disabled:opacity-50 transition duration-200" disabled>
+                        ← Ronda Anterior
+                    </button>
+                    <div class="flex space-x-2">
+                        <button onclick="changeMode('encrypt')" id="encryptButton" class="bg-[#1565C0] text-white py-2 px-4 rounded-lg font-semibold hover:bg-[#0D47A1] transition duration-200 hidden">
+                            Modo Cifrar
+                        </button>
+                        <button onclick="changeMode('decrypt')" id="decryptButton" class="bg-[#BBDEFB] text-[#0D47A1] py-2 px-4 rounded-lg font-semibold hover:bg-[#90CAF9] transition duration-200 hidden">
+                            Modo Descifrar
+                        </button>
+                    </div>
+                    <button onclick="nextRound()" id="nextButton" class="bg-primary-dark text-white py-2 px-4 rounded-lg font-semibold hover:bg-[#1565C0] disabled:opacity-50 transition duration-200" disabled>
+                        Ronda Siguiente →
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Resultado Final -->
+        <div id="finalResult" class="card mt-8 hidden">
+            <h2 class="text-2xl font-bold text-primary-dark mb-4 border-b pb-2">4. Resultado Final</h2>
+            <div class="log-section">
+                <p class="text-lg font-bold text-green-700">Mensaje Cifrado Completo (Texto HEX):</p>
+                <div id="cipherTextBlock" class="block-display bg-green-100 text-green-800 text-base">---</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Estado Global
+        let state = {
+            plainText: 'ejecutaralamanecer',
+            secretKey: 'skurt',
+            PKeys: [], // 16 Subclaves generadas (Dec)
+            messageBlocks: [], // Array de objetos { plain_L, plain_R, history: [{ L, R }] }
+            currentBlockIndex: 0,
+            maxRounds: 16,
+            round: 0, // 0 to 16
+            mode: 'encrypt',
+        };
+
+        // --- Utilidades de Conversión ---
+
+        function textToHex(text) {
+            let hex = '';
+            for (let i = 0; i < text.length; i++) {
+                const charCode = text.charCodeAt(i);
+                hex += charCode.toString(16).toUpperCase().padStart(2, '0');
+            }
+            return { hex };
+        }
+
+        function hexToDec(hex) {
+            return parseInt(hex, 16);
+        }
+
+        function decToHex(dec) {
+            // Usamos 16 bits (4 caracteres HEX) para simplificar la visualización de las subclaves
+            // Blowfish usa 32 bits para las P-Keys, pero para la demo usamos 16 (4 chars) para el ejemplo
+            return (dec & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+        }
+        
+        function hexToText(hex) {
+            let text = '';
+            for (let i = 0; i < hex.length; i += 2) {
+                const part = hex.substring(i, i + 2);
+                text += String.fromCharCode(parseInt(part, 16));
+            }
+            return text;
+        }
+
+        // --- 1. Key Scheduling (Generación de Subclaves) ---
+
+        function generateSubkeys(keyString) {
+            const PKeys = [];
+            let keySum = 0;
+
+            // FASE 1 & 2 SIMPLIFICADA: Inicialización con Pi y mezcla con la clave
+            for (let i = 0; i < keyString.length; i++) {
+                keySum += keyString.charCodeAt(i);
+            }
+            
+            // 2. Generar 16 valores determinísticos basados en la suma (16 bits)
+            for (let i = 0; i < state.maxRounds; i++) {
+                // FASE 3 SIMPLIFICADA: Emulamos el auto-cifrado, donde cada valor P depende del anterior.
+                // Genera un valor pseudo-aleatorio de 16 bits (simplificado para la simulación visual)
+                let P_value = (keySum * 0x7 + i * 0x1F) & 0xFFFF; // Limita a 16 bits
+                PKeys.push(P_value);
+                keySum = (keySum * 0x3 + P_value) & 0xFFFFFF; // Pequeño cambio en keySum
+            }
+            return PKeys;
+        }
+
+        // --- 2. Preparación de Mensaje (División y Padding) ---
+
+        function prepareMessage(text) {
+            const BLOCK_SIZE_CHARS = 8;
+            const blocks = [];
+            
+            // Padding
+            let paddedText = text;
+            const remainder = text.length % BLOCK_SIZE_CHARS;
+            if (remainder !== 0) {
+                const paddingLength = BLOCK_SIZE_CHARS - remainder;
+                // Usamos 'P' como relleno simple para la visualización
+                paddedText += 'P'.repeat(paddingLength); 
+            }
+
+            for (let i = 0; i < paddedText.length; i += BLOCK_SIZE_CHARS) {
+                const blockText = paddedText.substring(i, i + BLOCK_SIZE_CHARS);
+                const blockHex = textToHex(blockText).hex.padStart(16, '0'); // Asegura 16 HEX chars (64 bits)
+
+                const L = blockHex.substring(0, 8); // 32 bits
+                const R = blockHex.substring(8, 16); // 32 bits
+                
+                blocks.push({
+                    text: blockText,
+                    hex: blockHex,
+                    L: L,
+                    R: R,
+                    history: [{ L: L, R: R }], // Historial de 17 entradas (Ronda 0 a Ronda 16)
+                    encryptedHex: ''
+                });
+            }
+            return blocks;
+        }
+
+        // --- 3. Función F Simplificada ---
+
+        function simplifiedF(R_hex, PKey_dec) {
+            // Blowfish F: (R1 + P) XOR R2 + R3) XOR S4.
+            // SIMPLIFICADO: (R_half + PKey_dec) XOR 0xAAAA
+            const R_dec = hexToDec(R_hex.substring(4)); // Usamos la mitad del bloque R (16 bits)
+            const F_output = (R_dec + PKey_dec) ^ 0xAAAA;
+            return decToHex(F_output); // Retorna 4 HEX chars (16 bits)
+        }
+        
+        // --- Lógica Central de Cifrado/Descifrado ---
+
+        function runRound(currentL, currentR, roundIndex, isEncrypt) {
+            // Calcula el índice de la P-Key a usar (P1 en Ronda 1 de Cifrado, P16 en Ronda 1 de Descifrado)
+            // roundIndex: 1 a 16
+            const PKeyIndex = isEncrypt 
+                ? roundIndex - 1 
+                : state.maxRounds - roundIndex; 
+
+            const PKey_dec = state.PKeys[PKeyIndex]; 
+            
+            // 1. Calcular F. 
+            const F_out_hex = simplifiedF(currentR, PKey_dec); // F_out_hex tiene 4 HEX chars
+            
+            // 2. Calcular nuevo R (L XOR F)
+            // L_half_hex es la mitad de L que se usa en la XOR
+            const L_half_hex = currentL.substring(0, 4); 
+            
+            const L_dec = hexToDec(L_half_hex);
+            const F_out_dec = hexToDec(F_out_hex);
+
+            const newR_dec = L_dec ^ F_out_dec;
+            const newR_half_hex = decToHex(newR_dec); 
+            
+            // Nuevo R completo: el Nuevo R de la operación XOR + la otra mitad del R antiguo
+            const nextR = newR_half_hex + currentR.substring(4);
+
+            // 3. Intercambio (Nuevo L = R viejo)
+            const nextL = currentR; 
+
+            return { nextL, nextR, PKey_dec, F_out_hex, L_half_hex, R_in_half: currentR.substring(4) };
+        }
+
+        function runFullEncryption(block) {
+             let L = block.L;
+             let R = block.R;
+             block.history = [{ L: L, R: R }]; // Reinicia el historial
+             
+             for (let i = 1; i <= state.maxRounds; i++) {
+                const roundData = runRound(L, R, i, true);
+                L = roundData.nextL;
+                R = roundData.nextR;
+                
+                block.history.push({ 
+                    L: L, 
+                    R: R, 
+                    PKey: roundData.PKey_dec, 
+                    F_out: roundData.F_out_hex,
+                    L_in_half: roundData.L_half_hex,
+                    R_in_half: roundData.R_in_half,
+                    R_out_half: R.substring(0,4)
+                });
+             }
+             
+             // Final Step: Concatenación R||L
+             const finalState = block.history[state.maxRounds];
+             block.encryptedHex = finalState.R + finalState.L; 
+        }
+
+        // --- Funciones de Control de UI ---
+
+        function updateConversionUI() {
+            const keyText = document.getElementById('secretKey').value;
+            const plainText = document.getElementById('plainText').value;
+
+            // Clave (Key Scheduling)
+            const { hex: keyHex } = textToHex(keyText);
+            document.getElementById('keyText').textContent = keyText;
+            document.getElementById('keyHex').textContent = keyHex;
+
+            // P-Keys
+            document.getElementById('pKeysList').innerHTML = state.PKeys.map((p, i) => 
+                `<div class="font-mono text-xs"><span class="font-bold text-red-700">P${i + 1}:</span> ${decToHex(p)}</div>`
+            ).join('');
+
+            // Mensaje
+            state.messageBlocks.forEach(runFullEncryption); // Asegura que el historial esté completo
+            
+            document.getElementById('msgLength').textContent = plainText.length;
+            const blockContainer = document.getElementById('messageBlocks');
+            blockContainer.innerHTML = '';
+            
+            if (state.messageBlocks.length === 0) {
+                 blockContainer.innerHTML = `<p class="text-slate-500">Introduce un mensaje válido.</p>`;
+                 return;
+            }
+
+            state.messageBlocks.forEach((block, index) => {
+                const isPadded = block.text.includes('P');
+                blockContainer.innerHTML += `
+                    <div class="p-3 border rounded-lg ${index === state.currentBlockIndex ? 'border-blue-500 bg-blue-50' : 'border-slate-300'}">
+                        <p class="font-bold text-sm text-primary-dark">Bloque ${index + 1} (${block.text.length} chars)</p>
+                        <p class="font-mono text-xs text-slate-700">Texto: "${block.text}" ${isPadded ? '<span class="text-red-500">(Relleno)</span>' : ''}</p>
+                        <p class="font-mono text-xs text-slate-700">HEX (64 bits): ${block.hex}</p>
+                        <p class="font-mono text-xs text-slate-700">L (32 bits): <span class="text-red-700">${block.L}</span> | R (32 bits): <span class="text-blue-700">${block.R}</span></p>
+                    </div>
+                `;
+            });
+            
+        }
+
+        function updateRoundUI() {
+            const currentBlock = state.messageBlocks[state.currentBlockIndex];
+
+            // 1. Actualizar títulos y botones
+            document.getElementById('currentBlockTitle').textContent = `Bloque de Mensaje: ${state.currentBlockIndex + 1}/${state.messageBlocks.length}`;
+            document.getElementById('modeDisplay').textContent = `Modo: ${state.mode === 'encrypt' ? 'Cifrado' : 'Descifrado'}`;
+            
+            document.getElementById('prevBlockButton').disabled = state.currentBlockIndex === 0;
+            document.getElementById('nextBlockButton').disabled = state.currentBlockIndex === state.messageBlocks.length - 1;
+            
+            const isEncrypt = state.mode === 'encrypt';
+
+            // Indices de ronda:
+            // Cifrado: Ronda 0 (Inicial) a Ronda 16 (Final/Swap)
+            let roundDisplay = isEncrypt ? state.round : (state.maxRounds - state.round);
+
+            document.getElementById('nextButton').disabled = state.round === state.maxRounds;
+            document.getElementById('prevButton').disabled = state.round <= 0;
+
+            document.getElementById('roundTitle').textContent = `Ronda ${roundDisplay} de 16`;
+
+            // 2. Obtener estado L y R (para la visualización principal)
+            let L_block_val = '';
+            let R_block_val = '';
+            
+            // Determinar el índice del historial
+            let historyIndex;
+            if (isEncrypt) {
+                // Modo Cifrado: history[0] es L0||R0. history[16] es L16||R16 (Antes del swap final)
+                historyIndex = state.round;
+            } else {
+                // Modo Descifrado: history[16] es la entrada (R16||L16). history[0] es la salida (L0||R0)
+                historyIndex = state.maxRounds - state.round;
+            }
+            
+            const historyEntry = currentBlock.history[historyIndex];
+
+            if (!historyEntry) {
+                L_block_val = '----L_ERR'; 
+                R_block_val = '----R_ERR';
+                console.error("Error de historial: La entrada de historial no existe en el índice", historyIndex);
+            } else if (state.round === state.maxRounds && isEncrypt) {
+                // Estado final del Cifrado: Muestra el resultado FINAL (R16 || L16)
+                L_block_val = historyEntry.R; 
+                R_block_val = historyEntry.L; 
+            } else if (state.round === state.maxRounds && !isEncrypt) {
+                // Estado inicial del Descifrado: Muestra el bloque cifrado (R16 || L16)
+                L_block_val = historyEntry.R; 
+                R_block_val = historyEntry.L;
+            } else {
+                // Todas las demás rondas (L_i || R_i)
+                L_block_val = historyEntry.L;
+                R_block_val = historyEntry.R;
+            }
+
+            document.getElementById('L_block').textContent = L_block_val;
+            document.getElementById('R_block').textContent = R_block_val;
+
+            // 3. Actualizar Log y Diagrama
+            const logPKey = document.getElementById('logPKey');
+            const logFOut = document.getElementById('logFOut');
+            const logXOR = document.getElementById('logXOR');
+            
+            // --- Caso Límite 1: Cifrado Inicial (Ronda 0) ---
+            if (state.round === 0 && isEncrypt) {
+                 logPKey.innerHTML = `**Ronda 0 - Inicial:** Bloque de entrada listo para el cifrado.`;
+                 logFOut.textContent = ``;
+                 logXOR.textContent = `Presiona "Ronda Siguiente →" para comenzar la primera ronda.`;
+                 updateFeistelDiagramUI(currentBlock, isEncrypt, true);
+                 return;
+            }
+            
+            // --- Caso Límite 2: Descifrado Final (Ronda 0) - FIX para TypeError ---
+            if (state.round === 0 && !isEncrypt) {
+                 const decryptedBlock = currentBlock.history[0].L + currentBlock.history[0].R;
+                 logPKey.textContent = `¡FIN DEL DESCIFRADO! Bloque Descifrado (L0||R0): ${decryptedBlock}.`;
+                 logFOut.textContent = `Texto Original: "${hexToText(decryptedBlock).replace(/P+$/, '')}"`;
+                 logXOR.textContent = ``;
+                 updateFeistelDiagramUI(currentBlock, isEncrypt, true);
+                 return;
+            }
+            // --- Fin FIX ---
+
+            // --- Caso Límite 3: Final Cifrado (Ronda 16) / Inicial Descifrado (Ronda 16) ---
+            if (state.round === state.maxRounds) {
+                if (isEncrypt) {
+                    logPKey.textContent = `¡FIN DEL CIFRADO! Los bloques L y R (L16||R16) se concatenan como R||L.`;
+                    logFOut.textContent = `Bloque Cifrado: ${currentBlock.encryptedHex}`;
+                    logXOR.textContent = ``;
+                } else {
+                    logPKey.textContent = `INICIO DEL DESCIFRADO. El bloque cifrado (R16||L16) es la entrada.`;
+                    logFOut.textContent = `Presiona "Ronda Anterior" para aplicar P16.`;
+                    logXOR.textContent = ``;
+                }
+                 updateFeistelDiagramUI(currentBlock, isEncrypt, true);
+                 return;
+            }
+
+            // Si estamos en rondas intermedias, calculamos y mostramos el flujo de datos
+            
+            // --- Lógica para Rondas Intermedias (1 a 15) ---
+            
+            // Determinar la entrada a la función runRound
+            // En cifrado, la entrada es el estado anterior (i-1). En descifrado, es el estado siguiente (i+1).
+            const inputIndex = isEncrypt ? state.round - 1 : historyIndex + 1;
+            
+            const L_in_for_calc = currentBlock.history[inputIndex].L;
+            const R_in_for_calc = currentBlock.history[inputIndex].R;
+            
+            const PKeyIndex = isEncrypt ? state.round - 1 : (state.maxRounds - (state.maxRounds - state.round));
+            const PKey_hex = decToHex(state.PKeys[PKeyIndex]);
+            
+            const roundData = runRound(
+                L_in_for_calc,
+                R_in_for_calc,
+                isEncrypt ? state.round : (state.maxRounds - state.round),
+                isEncrypt
+            );
+            
+            updateFeistelDiagramUI(currentBlock, isEncrypt, false, L_in_for_calc, R_in_for_calc, roundData);
+            
+            logPKey.innerHTML = `**1. Subclave (P${PKeyIndex + 1}):** Se usa <span class="text-red-700">${PKey_hex}</span> generada por el Key Scheduling.`;
+            logFOut.innerHTML = `**2. Función F (Mezcla Secreta):** F($R_{i}$) genera ${roundData.F_out_hex} (16 bits de mezcla).`;
+            logXOR.innerHTML = `**3. Combinación XOR & Swap:** $L_{i}$ (${roundData.L_half_hex}) $\oplus$ F(${roundData.F_out_hex}) = ${roundData.nextR.substring(0,4)} (Nuevo $R$ parcial). **$R_{i}$** pasa directamente a $L_{i+1}$.`;
+        }
+        
+        function updateFeistelDiagramUI(currentBlock, isEncrypt, isBoundary, L_in_for_calc, R_in_for_calc, roundData) {
+            const diag_current_round = document.getElementById('diag_current_round');
+            const diag_L_in = document.getElementById('diag_L_in');
+            const diag_R_in = document.getElementById('diag_R_in');
+            const diag_P_key = document.getElementById('diag_P_key');
+            const diag_F_input = document.getElementById('diag_F_input');
+            const diag_F_output = document.getElementById('diag_F_output');
+            const diag_L_half_in = document.getElementById('diag_L_half_in');
+            const diag_R_new_half = document.getElementById('diag_R_new_half');
+            const diag_L_out = document.getElementById('diag_L_out');
+            const diag_L_out_val = document.getElementById('diag_L_out_val');
+            const diag_R_out_val = document.getElementById('diag_R_out_val');
+
+            diag_current_round.textContent = isEncrypt ? state.round : (state.maxRounds - state.round);
+
+            if (isBoundary) {
+                const isInitialEncrypt = state.round === 0 && isEncrypt;
+                const isFinalEncrypt = state.round === state.maxRounds && isEncrypt;
+                const isInitialDecrypt = state.round === state.maxRounds && !isEncrypt;
+                const isFinalDecrypt = state.round === 0 && !isEncrypt; // FIX: Nuevo estado
+
+                let L_in, R_in, L_out_val, R_out_val;
+
+                if (isInitialEncrypt || isFinalDecrypt) { 
+                    // Estado Inicial (Enc) o Final (Dec) - Plaintext L0 || R0
+                    const stateEntry = currentBlock.history[0];
+                    L_in = stateEntry.L;
+                    R_in = stateEntry.R;
+                    L_out_val = L_in;
+                    R_out_val = R_in;
+                } else if (isFinalEncrypt || isInitialDecrypt) {
+                    // Estado Final (Enc) o Inicial (Dec) - Ciphertext R16 || L16
+                    const finalState = currentBlock.history[state.maxRounds];
+                    
+                    // La entrada al sistema (R16 || L16)
+                    L_in = finalState.R;
+                    R_in = finalState.L;
+                    
+                    // La salida (R16 || L16)
+                    L_out_val = L_in;
+                    R_out_val = R_in;
+                }
+
+                diag_L_in.textContent = L_in;
+                diag_R_in.textContent = R_in;
+                diag_P_key.textContent = 'N/A';
+                diag_F_input.textContent = 'N/A';
+                diag_F_output.textContent = (isFinalEncrypt || isInitialDecrypt) ? 'CONCATENACIÓN/ENTRADA' : 'INICIO/FIN';
+                diag_L_half_in.textContent = 'Bloque completo';
+                diag_R_new_half.textContent = '---';
+                diag_L_out.textContent = L_in; 
+                diag_L_out_val.textContent = L_out_val; 
+                diag_R_out_val.textContent = R_out_val; 
+                
+            } else {
+                // Rondas Intermedias (1 a 15)
+                const currentRound = isEncrypt ? state.round : state.maxRounds - state.round;
+                const PKeyIndex = isEncrypt ? state.round - 1 : (state.maxRounds - currentRound);
+                const PKey_dec = state.PKeys[PKeyIndex];
+                const PKey_hex = decToHex(PKey_dec);
+
+                // La salida es el resultado de la ronda actual (L_i+1 || R_i+1)
+                const nextHistoryEntry = currentBlock.history[isEncrypt ? state.round : currentRound];
+                
+                let L_out_val_final = roundData.nextL;
+                let R_out_val_final = roundData.nextR;
+
+                // Inputs
+                diag_L_in.textContent = L_in_for_calc;
+                diag_R_in.textContent = R_in_for_calc;
+
+                // F-Function
+                diag_P_key.textContent = `P${PKeyIndex + 1}: ${PKey_hex}`;
+                diag_F_input.textContent = `${R_in_for_calc.substring(4)} (16 bits)`;
+                diag_F_output.textContent = roundData.F_out_hex;
+
+                // XOR/Swap
+                diag_L_half_in.textContent = `${roundData.L_half_hex} (16 bits)`;
+                diag_R_new_half.textContent = roundData.nextR.substring(0, 4);
+                diag_L_out.textContent = R_in_for_calc; // R_in se convierte en L_out
+
+                // Final Output
+                diag_L_out_val.textContent = L_out_val_final;
+                diag_R_out_val.textContent = R_out_val_final;
+            }
+        }
+
+        // --- Funciones de Navegación ---
+
+        function initMultiBlockSimulation() {
+            const plainText = document.getElementById('plainText').value;
+            const secretKey = document.getElementById('secretKey').value;
+
+            if (plainText.length === 0 || secretKey.length === 0) {
+                console.error("Por favor, introduce tanto el mensaje a cifrar como la clave secreta.");
+                return;
+            }
+
+            state.plainText = plainText;
+            state.secretKey = secretKey;
+            
+            // Generación de P-Keys
+            state.PKeys = generateSubkeys(secretKey);
+
+            // Preparación de bloques y Cifrado completo (para llenar el historial)
+            state.messageBlocks = prepareMessage(plainText);
+            state.messageBlocks.forEach(runFullEncryption);
+            
+            // Mostrar resultado final
+            const encryptedHexResult = state.messageBlocks.map(b => b.encryptedHex).join('');
+            document.getElementById('cipherTextBlock').textContent = encryptedHexResult;
+            document.getElementById('finalResult').classList.remove('hidden');
+
+            // Reiniciar estado de visualización a Ronda 0, Bloque 1
+            state.currentBlockIndex = 0;
+            state.round = 0;
+            state.mode = 'encrypt';
+            
+            // Actualizar UI
+            document.getElementById('encryptButton').classList.remove('hidden');
+            document.getElementById('decryptButton').classList.remove('hidden');
+            document.getElementById('startButton').textContent = "Reiniciar Simulación";
+            
+            updateConversionUI();
+            updateRoundUI();
+        }
+        
+        function changeBlock(direction) {
+            const newIndex = state.currentBlockIndex + direction;
+            if (newIndex >= 0 && newIndex < state.messageBlocks.length) {
+                state.currentBlockIndex = newIndex;
+                state.round = 0; // Siempre vuelve a la Ronda 0 al cambiar de bloque
+                state.mode = 'encrypt';
+                updateConversionUI();
+                updateRoundUI();
+            }
+        }
+        
+        function changeMode(newMode) {
+            state.mode = newMode;
+            // Al cambiar a descifrar, la ronda inicial es la 16 (el texto cifrado)
+            state.round = newMode === 'encrypt' ? 0 : state.maxRounds; 
+            updateRoundUI();
+        }
+
+        function nextRound() {
+            if (state.round >= state.maxRounds) return;
+            state.round++;
+            updateRoundUI();
+        }
+
+        function prevRound() {
+            if (state.round <= 0) return;
+            state.round--;
+            updateRoundUI();
+        }
+
+        window.onload = function() {
+            initMultiBlockSimulation();
+        };
+
+    </script>
+</body>
+</html>
