@@ -10,7 +10,7 @@ import {
     Box,
     TextField,
     InputAdornment,
-    Grid
+    Grid2
 } from '@mui/material';
 import {
     Search,
@@ -82,9 +82,9 @@ const ResourcesPage = () => {
                 </Box>
             </Box>
 
-            <Grid container spacing={3}>
+            <Grid2 container spacing={3}>
                 {filteredResources.map(resource => (
-                    <Grid item xs={12} md={6} lg={4} key={resource.id}>
+                    <Grid2 size={{ xs: 12, md: 6, lg: 4 }} key={resource.id}>
                         <Card
                             elevation={3}
                             sx={{
@@ -126,9 +126,9 @@ const ResourcesPage = () => {
                                 </Button>
                             </CardActions>
                         </Card>
-                    </Grid>
+                    </Grid2>
                 ))}
-            </Grid>
+            </Grid2>
 
             {filteredResources.length === 0 && (
                 <Box sx={{ textAlign: 'center', py: 8 }}>

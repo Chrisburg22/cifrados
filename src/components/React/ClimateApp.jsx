@@ -1,428 +1,440 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
+  Container,
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  LinearProgress,
+  Chip,
+  Stack,
+  Alert,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Divider
+} from '@mui/material';
+import {
+  CheckCircle,
+  Cancel,
+  HelpOutline,
   ChevronRight,
-  RotateCcw,
-  Trophy,
-  BookOpen,
-  HelpCircle
-} from 'lucide-react';
+  Refresh,
+  EmojiEvents,
+  MenuBook,
+  Circle
+} from '@mui/icons-material';
+
+const quizData = [
+  {
+    question: "¿Cuál es el principal gas de efecto invernadero emitido por actividades humanas?",
+    options: ["Oxígeno", "Dióxido de Carbono (CO₂)", "Nitrógeno", "Helio"],
+    correct: 1
+  },
+  {
+    question: "¿Qué porcentaje aproximado del calentamiento global es atribuible a la actividad humana?",
+    options: ["10%", "50%", "95%", "100%"],
+    correct: 2
+  },
+  {
+    question: "¿Cuál de las siguientes NO es una fuente de energía renovable?",
+    options: ["Solar", "Eólica", "Carbón", "Hidroeléctrica"],
+    correct: 2
+  },
+  {
+    question: "¿Qué acuerdo internacional busca limitar el aumento de la temperatura global?",
+    options: ["Protocolo de Kioto", "Acuerdo de París", "Convención de Viena", "Tratado de Montreal"],
+    correct: 1
+  },
+  {
+    question: "¿Cuál es el objetivo principal de la mitigación del cambio climático?",
+    options: [
+      "Adaptarse a los cambios",
+      "Reducir las emisiones de gases de efecto invernadero",
+      "Aumentar la producción de energía",
+      "Construir más infraestructura"
+    ],
+    correct: 1
+  }
+];
 
 const App = () => {
-  // Datos del Quiz (Basados en el documento de Molina, Sarukhán y Carabias)
-  const quizData = {
-    title: "Evaluación Crítica: Cambio Climático",
-    questions: [
-      {
-        questionNumber: 1,
-        question: "¿Cuál es el principal gas de efecto invernadero (GEI) que ha aumentado drásticamente debido a la quema de combustibles fósiles, según el consenso científico?",
-        answerOptions: [
-          { text: "Dióxido de Carbono (CO₂)", rationale: "El CO₂ es el principal motor del calentamiento global antropogénico debido a su larga permanencia en la atmósfera y el volumen de emisiones por combustibles fósiles.", isCorrect: true },
-          { text: "Nitrógeno (N₂)", rationale: "El Nitrógeno compone el 78% de la atmósfera pero no tiene propiedades de gas de efecto invernadero.", isCorrect: false },
-          { text: "Argón (Ar)", rationale: "El Argón es un gas noble inerte que no interactúa con la radiación infrarroja de la Tierra.", isCorrect: false },
-          { text: "Oxígeno (O₂)", rationale: "El Oxígeno es vital para la vida pero sus moléculas diatómicas no absorben radiación térmica significativamente.", isCorrect: false }
-        ],
-        hint: "Es el producto directo de la combustión de carbón, petróleo y gas natural."
-      },
-      {
-        questionNumber: 2,
-        question: "De acuerdo con la dinámica del clima global, ¿qué porcentaje de la radiación solar entrante es aproximadamente absorbido por la superficie terrestre?",
-        answerOptions: [
-          { text: "Cerca del 50%", rationale: "Aproximadamente la mitad de la energía solar atraviesa la atmósfera y es absorbida por océanos y continentes.", isCorrect: true },
-          { text: "El 100%", rationale: "Parte de la radiación es reflejada por las nubes (albedo) y absorbida por la propia atmósfera antes de llegar al suelo.", isCorrect: false },
-          { text: "Menos del 5%", rationale: "Si solo se absorbiera el 5%, la Tierra sería un bloque de hielo incapaz de sustentar vida.", isCorrect: false },
-          { text: "Exactamente el 75%", rationale: "El albedo terrestre y la absorción atmosférica impiden que una fracción tan alta llegue directamente a la superficie.", isCorrect: false }
-        ],
-        hint: "Piensa en el balance energético: una parte se refleja y otra se absorbe en el aire."
-      },
-      {
-        questionNumber: 3,
-        question: "¿Cuál es la función principal del Instituto Nacional de Ecología y Cambio Climático (INECC) en México?",
-        answerOptions: [
-          { text: "Generar investigación científica y técnica para la toma de decisiones climáticas.", rationale: "El INECC es el brazo científico que provee la evidencia necesaria para las políticas públicas ambientales en México.", isCorrect: true },
-          { text: "Sancionar a empresas que contaminen el aire.", rationale: "La labor de vigilancia y sanción corresponde a la PROFEPA, no al INECC.", isCorrect: false },
-          { text: "Construir parques de energía eólica directamente.", rationale: "La construcción de infraestructura es competencia de la CFE o el sector privado.", isCorrect: false },
-          { text: "Administrar el presupuesto de los programas sociales.", rationale: "El INECC es un organismo técnico especializado en medio ambiente.", isCorrect: false }
-        ],
-        hint: "Se enfoca en la base científica de las políticas nacionales como la ENCC."
-      },
-      {
-        questionNumber: 4,
-        question: "En el contexto de la Estrategia Nacional de Cambio Climático (ENCC), ¿qué significa la 'Visión 10-20-40'?",
-        answerOptions: [
-          { text: "Un esquema de planeación a 10, 20 y 40 años para metas de mitigación y adaptación.", rationale: "La ENCC define horizontes temporales claros para guiar la política climática de México a corto, mediano y largo plazo.", isCorrect: true },
-          { text: "La reducción del 10%, 20% y 40% del precio de la gasolina.", rationale: "La ENCC no se enfoca en el control de precios, sino en la reducción de emisiones.", isCorrect: false },
-          { text: "Un código de seguridad para huracanes.", rationale: "Se refiere específicamente a la temporalidad de la planeación estratégica.", isCorrect: false },
-          { text: "La cantidad de especies que México busca clonar.", rationale: "La estrategia se centra en la conservación de ecosistemas y mitigación de gases.", isCorrect: false }
-        ],
-        hint: "Tiene que ver con la temporalidad del compromiso de México."
-      },
-      {
-        questionNumber: 5,
-        question: "¿Qué fenómeno describe el 'Albedo' terrestre y por qué es relevante?",
-        answerOptions: [
-          { text: "La capacidad de reflexión de la radiación solar por superficies blancas como el hielo.", rationale: "Al derretirse el hielo, el albedo disminuye, la Tierra absorbe más calor y se acelera el calentamiento.", isCorrect: true },
-          { text: "La velocidad a la que crecen los árboles.", rationale: "Eso es productividad primaria neta, no tiene relación con el término albedo.", isCorrect: false },
-          { text: "El proceso de acidificación de los océanos.", rationale: "La acidificación es un cambio químico; el albedo es un fenómeno físico de reflexión.", isCorrect: false },
-          { text: "La rotación de la Tierra sobre su eje.", rationale: "La rotación causa el ciclo día-noche; el albedo depende de la superficie.", isCorrect: false }
-        ],
-        hint: "Piensa en por qué una camiseta blanca es más fresca que una negra bajo el sol."
-      }
-    ]
-  };
-
-  // Estados
   const [currentStep, setCurrentStep] = useState('intro');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [shuffledOptions, setShuffledOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isAnswered, setIsAnswered] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
-  const [showHint, setShowHint] = useState(false);
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [answers, setAnswers] = useState([]);
 
-  // Función para barajar las opciones
-  const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+  const handleStart = () => {
+    setCurrentStep('quiz');
+    setCurrentQuestion(0);
+    setScore(0);
+    setAnswers([]);
+    setSelectedAnswer(null);
   };
 
-  // Efecto para barajar opciones cuando cambia la pregunta
-  useEffect(() => {
-    if (currentStep === 'quiz') {
-      const currentOptions = quizData.questions[currentQuestionIndex].answerOptions;
-      setShuffledOptions(shuffleArray(currentOptions));
-    }
-  }, [currentQuestionIndex, currentStep]);
-
-  const handleStart = () => setCurrentStep('quiz');
-
-  const handleOptionSelect = (index) => {
-    if (isAnswered) return;
-    setSelectedOption(index);
-  };
-
-  const handleSubmit = () => {
-    const correct = shuffledOptions[selectedOption].isCorrect;
-    if (correct) setScore(score + 1);
-
-    setUserAnswers([...userAnswers, {
-      questionIndex: currentQuestionIndex,
-      selectedOptionIndex: selectedOption,
-      isCorrect: correct
-    }]);
-
-    setIsAnswered(true);
+  const handleAnswer = (index) => {
+    setSelectedAnswer(index);
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex + 1 < quizData.questions.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-      setIsAnswered(false);
-      setShowHint(false);
+    const isCorrect = selectedAnswer === quizData[currentQuestion].correct;
+    const newAnswers = [...answers, { question: currentQuestion, selected: selectedAnswer, correct: isCorrect }];
+    setAnswers(newAnswers);
+
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+
+    if (currentQuestion < quizData.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
     } else {
       setCurrentStep('result');
     }
   };
 
-  const handleRestart = () => {
-    setCurrentStep('intro');
-    setCurrentQuestionIndex(0);
-    setSelectedOption(null);
-    setIsAnswered(false);
-    setScore(0);
-    setUserAnswers([]);
-    setShowHint(false);
+  const getResultMessage = () => {
+    const percentage = (score / quizData.length) * 100;
+    if (percentage >= 80) return { text: "¡Excelente! Dominas el tema", color: "success" };
+    if (percentage >= 60) return { text: "¡Bien hecho! Buen conocimiento", color: "info" };
+    if (percentage >= 40) return { text: "Puedes mejorar, sigue aprendiendo", color: "warning" };
+    return { text: "Necesitas repasar el material", color: "error" };
   };
 
   const renderIntro = () => (
-    <div className="text-center space-y-12 sm:space-y-16 animate-fade-in duration-500 w-full max-w-4xl mx-auto px-6 sm:px-12">
-      <div className="space-y-8 sm:space-y-10">
-        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-600 rounded-3xl sm:rounded-full flex items-center justify-center mx-auto shadow-2xl ring-8 ring-white transform hover:rotate-3 transition-transform duration-500">
-          <BookOpen className="w-12 h-12 sm:w-16 sm:h-16" strokeWidth={1.5} />
-        </div>
-        <div className="space-y-6">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
-            {quizData.title}
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Pon a prueba tus conocimientos sobre la ciencia del cambio climático y las políticas públicas en México. ¡Ahora con opciones aleatorias para un mayor desafío!
-          </p>
-        </div>
-      </div>
+    <Container maxWidth="md" sx={{ py: 8 }}>
+      <Stack spacing={6} alignItems="center">
+        <Box textAlign="center">
+          <Typography variant="h2" component="h1" fontWeight="bold" color="primary" gutterBottom>
+            Cambio Climático
+          </Typography>
+          <Typography variant="h5" color="text.secondary">
+            Evaluación de Conocimientos
+          </Typography>
+        </Box>
 
-      <div className="bg-white/70 backdrop-blur-xl p-8 sm:p-12 rounded-[2.5rem] text-blue-700 flex flex-col sm:flex-row items-center sm:items-start gap-6 mx-auto text-left border border-white shadow-2xl shadow-blue-500/10 relative overflow-hidden group">
-        <div className="absolute top-0 left-0 w-2 h-full bg-blue-500/50"></div>
-        <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-          <AlertCircle className="text-blue-500" size={32} />
-        </div>
-        <div className="space-y-3 text-center sm:text-left">
-          <p className="font-black text-slate-900 text-lg sm:text-xl uppercase tracking-tighter">Información de la Evaluación</p>
-          <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-            Esta evaluación consta de <strong className="text-blue-600 font-black">{quizData.questions.length} preguntas técnicas</strong>. Necesitas un <strong className="text-blue-600 font-black">80% de precisión</strong> para considerarte experto en el tema.
-          </p>
-        </div>
-      </div>
+        <Card elevation={3} sx={{ width: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+          <CardContent sx={{ p: 4 }}>
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ color: 'white' }}>
+              <HelpOutline sx={{ fontSize: 40 }} />
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  ¿Sabías que...?
+                </Typography>
+                <Typography variant="body1">
+                  El cambio climático es uno de los mayores desafíos de nuestro tiempo. Este quiz te ayudará a evaluar tu conocimiento sobre el tema.
+                </Typography>
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
 
-      <div className="pt-8">
-        <button
+        <Paper elevation={2} sx={{ p: 4, width: '100%' }}>
+          <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+            Instrucciones
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="success" />
+              </ListItemIcon>
+              <ListItemText primary="5 preguntas de opción múltiple" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="success" />
+              </ListItemIcon>
+              <ListItemText primary="Selecciona la respuesta que consideres correcta" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircle color="success" />
+              </ListItemIcon>
+              <ListItemText primary="Al finalizar verás tu puntuación y retroalimentación" />
+            </ListItem>
+          </List>
+        </Paper>
+
+        <Button
+          variant="contained"
+          size="large"
+          endIcon={<ChevronRight />}
           onClick={handleStart}
-          className="group relative inline-flex items-center justify-center bg-slate-900 text-white px-12 py-6 rounded-3xl font-black text-xl transition-all shadow-2xl hover:shadow-emerald-500/40 overflow-hidden active:scale-95"
+          sx={{
+            px: 6,
+            py: 2,
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            borderRadius: 3,
+            textTransform: 'none'
+          }}
         >
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-600 to-emerald-400 opacity-100 group-hover:opacity-90 transition-opacity"></span>
-          <span className="relative flex items-center gap-3">
-            Comenzar Evaluación <ChevronRight className="group-hover:translate-x-2 transition-transform duration-300" size={24} />
-          </span>
-        </button>
-      </div>
-    </div>
+          Comenzar Evaluación
+        </Button>
+      </Stack>
+    </Container>
   );
 
-  const renderQuiz = () => {
-    const q = quizData.questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / quizData.questions.length) * 100;
+  const renderQuiz = () => (
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Stack spacing={4}>
+        <Box>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h6" color="text.secondary">
+              Pregunta {currentQuestion + 1} de {quizData.length}
+            </Typography>
+            <Chip
+              icon={<Circle sx={{ fontSize: 12 }} />}
+              label="Examen Activo"
+              color="success"
+              size="small"
+            />
+          </Stack>
+          <LinearProgress
+            variant="determinate"
+            value={((currentQuestion + 1) / quizData.length) * 100}
+            sx={{ height: 8, borderRadius: 4 }}
+          />
+        </Box>
 
-    return (
-      <div className="w-full max-w-5xl animate-slide-in-from-right duration-500 px-6 sm:px-12">
-        <div className="mb-12 sm:mb-20">
-          <div className="flex justify-between items-end gap-3 mb-6 px-2">
-            <div className="space-y-2">
-              <span className="block text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Progreso de Evaluación</span>
-              <span className="text-2xl sm:text-4xl font-black text-slate-900 flex items-center gap-2">
-                Pregunta {currentQuestionIndex + 1}
-                <span className="text-slate-300 font-light">/</span>
-                <span className="text-slate-400">{quizData.questions.length}</span>
-              </span>
-            </div>
-            <div className="bg-emerald-500 text-white text-sm font-black px-4 py-2 rounded-2xl shadow-lg shadow-emerald-500/20">
-              {Math.round(progress)}%
-            </div>
-          </div>
-          <div className="w-full bg-slate-100 h-4 sm:h-5 rounded-full overflow-hidden shadow-inner border-4 border-white">
-            <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 h-full transition-all duration-1000 ease-out rounded-full relative" style={{ width: `${progress}%` }}>
-              <div className="absolute top-0 right-0 h-full w-8 bg-white/20 blur-sm"></div>
-            </div>
-          </div>
-        </div>
+        <Card elevation={4} sx={{ p: { xs: 3, sm: 6 } }}>
+          <CardContent>
+            <Typography variant="h5" component="h2" gutterBottom fontWeight="bold" color="primary">
+              {quizData[currentQuestion].question}
+            </Typography>
 
-        <div className="bg-white rounded-[3rem] p-8 sm:p-16 mb-12 shadow-2xl shadow-slate-200/60 border border-slate-50 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-50/50 rounded-full -mr-48 -mt-48 blur-[100px]"></div>
+            <Stack spacing={2} mt={4}>
+              {quizData[currentQuestion].options.map((option, index) => (
+                <Button
+                  key={index}
+                  variant={selectedAnswer === index ? "contained" : "outlined"}
+                  onClick={() => handleAnswer(index)}
+                  sx={{
+                    justifyContent: 'flex-start',
+                    textAlign: 'left',
+                    p: 2.5,
+                    fontSize: '1rem',
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      transform: 'translateX(8px)'
+                    }
+                  }}
+                  fullWidth
+                >
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Chip
+                      label={String.fromCharCode(65 + index)}
+                      size="small"
+                      color={selectedAnswer === index ? "secondary" : "default"}
+                    />
+                    <Typography>{option}</Typography>
+                  </Stack>
+                </Button>
+              ))}
+            </Stack>
 
-          <div className="relative z-10 space-y-12">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-[1.2] tracking-tighter">
-              {q.question}
-            </h2>
-
-            <div className="grid gap-5">
-              {shuffledOptions.map((opt, idx) => {
-                let style = "border-slate-100 bg-slate-50/30 hover:border-emerald-200 hover:bg-emerald-50/30 hover:shadow-2xl hover:shadow-emerald-500/5";
-                if (selectedOption === idx) style = "border-emerald-500 bg-emerald-50/50 ring-8 ring-emerald-500/5 shadow-xl";
-                if (isAnswered) {
-                  if (opt.isCorrect) style = "border-emerald-500 bg-emerald-50/50 ring-8 ring-emerald-500/5 shadow-xl";
-                  else if (selectedOption === idx) style = "border-red-500 bg-red-50/50 ring-8 ring-red-500/5 shadow-xl";
-                  else style = "border-slate-50 opacity-30 bg-slate-50 grayscale pointer-events-none";
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    disabled={isAnswered}
-                    onClick={() => handleOptionSelect(idx)}
-                    className={`w-full text-left p-6 sm:p-8 rounded-[2rem] border-2 transition-all duration-500 flex items-center justify-between gap-6 cursor-pointer group/opt ${style}`}
-                  >
-                    <div className="flex items-center gap-6">
-                      <span className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-base sm:text-lg transition-all duration-500 ${selectedOption === idx ? 'bg-emerald-600 text-white scale-110' : 'bg-white border-2 border-slate-100 text-slate-400 group-hover/opt:border-emerald-200 group-hover/opt:text-emerald-600 shadow-sm'}`}>
-                        {String.fromCharCode(65 + idx)}
-                      </span>
-                      <span className="text-lg sm:text-xl font-bold text-slate-700 leading-snug">{opt.text}</span>
-                    </div>
-                    {isAnswered && opt.isCorrect && <div className="bg-emerald-500 p-2 rounded-2xl shadow-lg shadow-emerald-500/30"><CheckCircle2 className="text-white shrink-0" size={24} /></div>}
-                    {isAnswered && selectedOption === idx && !opt.isCorrect && <div className="bg-red-500 p-2 rounded-2xl shadow-lg shadow-red-500/30"><XCircle className="text-white shrink-0" size={24} /></div>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {isAnswered && (
-          <div className="p-8 sm:p-14 bg-slate-900 text-white rounded-[3rem] border border-slate-800 animate-fade-in duration-700 mb-12 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full -mr-24 -mt-24 blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-1000"></div>
-            <div className="relative z-10 space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em]">Fundamento Técnico</p>
-              </div>
-              <p className="text-lg sm:text-2xl text-slate-200 leading-relaxed font-medium italic">"{shuffledOptions[selectedOption].rationale}"</p>
-            </div>
-          </div>
-        )}
-
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-10 mt-16 px-4">
-          <button
-            onClick={() => setShowHint(!showHint)}
-            className="flex items-center gap-4 text-xs font-black text-slate-400 hover:text-blue-600 transition-all uppercase tracking-widest group"
-          >
-            <div className="w-14 h-14 rounded-3xl border-4 border-slate-100 flex items-center justify-center group-hover:border-blue-100 group-hover:bg-blue-50 transition-all duration-300">
-              <HelpCircle size={24} />
-            </div>
-            <div className="flex flex-col items-start translate-y-1">
-              <span>¿Necesitas ayuda?</span>
-              <span className="text-slate-300 group-hover:text-blue-400 uppercase tracking-[0.2em]">{showHint ? "Ocultar pista" : "Ver pista técnica"}</span>
-            </div>
-          </button>
-
-          <div className="flex items-center gap-6 w-full lg:w-auto">
-            {!isAnswered ? (
-              <button
-                disabled={selectedOption === null}
-                onClick={handleSubmit}
-                className="w-full lg:w-auto bg-slate-900 hover:bg-slate-800 disabled:opacity-20 disabled:cursor-not-allowed text-white px-12 py-6 rounded-[2rem] font-black transition-all text-xl shadow-2xl hover:shadow-slate-500/30 active:scale-95 border-b-8 border-slate-950"
-              >
-                Confirmar Selección
-              </button>
-            ) : (
-              <button
+            <Box mt={4} display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                size="large"
+                endIcon={<ChevronRight />}
                 onClick={handleNext}
-                className="w-full lg:w-auto bg-emerald-600 hover:bg-emerald-500 text-white px-12 py-6 rounded-[2rem] font-black flex items-center justify-center gap-3 transition-all text-xl shadow-2xl shadow-emerald-500/30 active:scale-95 border-b-8 border-emerald-800"
+                disabled={selectedAnswer === null}
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 'bold'
+                }}
               >
-                {currentQuestionIndex + 1 === quizData.questions.length ? "Finalizar Evaluación" : "Continuar"} <ChevronRight className="group-hover:translate-x-1" size={28} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {showHint && !isAnswered && (
-          <div className="mt-12 p-8 sm:p-12 bg-blue-50/50 backdrop-blur-xl text-blue-900 rounded-[3rem] border-4 border-white italic shadow-2xl animate-fade-in relative">
-            <div className="absolute -top-4 left-12 bg-blue-600 text-white text-[10px] font-black px-5 py-2 rounded-2xl uppercase tracking-widest shadow-xl shadow-blue-600/20">Sugerencia</div>
-            <p className="text-xl sm:text-2xl leading-relaxed font-bold">"{q.hint}"</p>
-          </div>
-        )}
-      </div>
-    );
-  };
+                {currentQuestion < quizData.length - 1 ? 'Siguiente' : 'Finalizar'}
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Stack>
+    </Container>
+  );
 
   const renderResult = () => {
-    const finalScore = (score / quizData.questions.length) * 100;
-    const isPass = finalScore >= 80;
+    const result = getResultMessage();
+    const percentage = (score / quizData.length) * 100;
 
     return (
-      <div className="text-center space-y-16 animate-fade-in duration-1000 w-full max-w-5xl mx-auto px-8">
-        <div className="relative inline-block mt-8">
-          <div className="absolute inset-0 bg-yellow-400 blur-[120px] opacity-30 rounded-full animate-pulse"></div>
-          <div className="relative w-48 h-48 sm:w-72 sm:h-72 mx-auto bg-white rounded-[4rem] shadow-2xl border-8 border-white flex items-center justify-center ring-1 ring-slate-100">
-            <Trophy size={160} className={isPass ? "text-yellow-500" : "text-slate-100"} strokeWidth={1} />
-            <div className="absolute -bottom-6 -right-6 bg-emerald-600 text-white text-4xl sm:text-5xl font-black w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center rounded-[2.5rem] shadow-2xl ring-[12px] ring-white animate-bounce-slow">
-              {score}
-            </div>
-          </div>
-        </div>
+      <Container maxWidth="md" sx={{ py: 8 }}>
+        <Stack spacing={4} alignItems="center">
+          <EmojiEvents sx={{ fontSize: 80, color: 'primary.main' }} />
 
-        <div className="space-y-8">
-          <h2 className="text-5xl sm:text-8xl font-black text-slate-900 leading-none tracking-tighter">
-            {isPass ? "¡Éxito Total!" : "Buen Intento"}
-          </h2>
-          <p className="text-xl sm:text-3xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
-            Completaste el análisis técnico con una precisión del <span className="text-emerald-600 font-black">{finalScore.toFixed(0)}%</span>
-          </p>
-          {isPass ? (
-            <div className="flex items-center justify-center gap-3 bg-emerald-50 text-emerald-600 px-8 py-4 rounded-3xl border-2 border-emerald-100 w-fit mx-auto font-black text-sm tracking-widest uppercase shadow-xl shadow-emerald-500/5">
-              Certificación de Nivel Experto Otorgada 🎓
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-3 bg-slate-100 text-slate-500 px-8 py-4 rounded-3xl border-2 border-slate-200 w-fit mx-auto font-black text-sm tracking-widest uppercase">
-              Continúa Investigando 📚
-            </div>
-          )}
-        </div>
+          <Typography variant="h3" component="h1" fontWeight="bold" color="primary" textAlign="center">
+            ¡Evaluación Completada!
+          </Typography>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto pt-8">
-          <div className="bg-white p-10 sm:p-14 rounded-[3.5rem] border border-slate-50 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-2 bg-emerald-500"></div>
-            <p className="text-7xl font-black text-emerald-600 mb-4 group-hover:scale-110 transition-transform duration-500">{score}</p>
-            <p className="text-xs text-slate-400 uppercase font-black tracking-[0.4em]">Respuestas Correctas</p>
-          </div>
-          <div className="bg-white p-10 sm:p-14 rounded-[3.5rem] border border-slate-50 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
-            <p className="text-7xl font-black text-red-500 mb-4 group-hover:scale-110 transition-transform duration-500">{quizData.questions.length - score}</p>
-            <p className="text-xs text-slate-400 uppercase font-black tracking-[0.4em]">Puntos de Revisión</p>
-          </div>
-        </div>
+          <Alert severity={result.color} sx={{ width: '100%', fontSize: '1.1rem' }}>
+            <Typography variant="h6" fontWeight="bold">
+              {result.text}
+            </Typography>
+          </Alert>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12">
-          <button
-            onClick={handleRestart}
-            className="w-full sm:w-auto flex items-center justify-center gap-4 bg-slate-900 hover:bg-slate-800 text-white px-12 py-7 rounded-[2.5rem] font-black transition-all text-xl shadow-2xl active:scale-95 border-b-8 border-slate-950"
-          >
-            <RotateCcw size={24} /> Nueva Evaluación
-          </button>
-        </div>
+          <Card elevation={3} sx={{ width: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+            <CardContent sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant="h2" fontWeight="bold" sx={{ color: 'white', mb: 1 }}>
+                {score} / {quizData.length}
+              </Typography>
+              <Typography variant="h6" sx={{ color: 'white' }}>
+                {percentage.toFixed(0)}% de respuestas correctas
+              </Typography>
+            </CardContent>
+          </Card>
 
-        <div className="pt-20 border-t border-slate-100 max-w-2xl mx-auto pb-10">
-          <p className="text-[10px] text-slate-300 uppercase font-black tracking-[0.4em] mb-6">Métrica de Rendimiento Final</p>
-          <p className="text-base sm:text-xl text-slate-500 leading-relaxed font-medium italic">
-            {isPass
-              ? "Tu análisis sobre el forzamiento radiativo y los horizontes de la ENCC demuestra una comprensión sobresaliente de la crisis climática."
-              : "Te sugerimos profundizar en el balance térmico de la superficie y la visión temporal de las estrategias nacionales en México."}
-          </p>
-        </div>
-      </div>
+          <Paper elevation={2} sx={{ p: 4, width: '100%' }}>
+            <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+              Revisión de Respuestas
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <List>
+              {answers.map((answer, index) => (
+                <ListItem key={index} sx={{ py: 1.5 }}>
+                  <ListItemIcon>
+                    {answer.correct ? (
+                      <CheckCircle color="success" />
+                    ) : (
+                      <Cancel color="error" />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Pregunta ${index + 1}`}
+                    secondary={quizData[answer.question].question}
+                    primaryTypographyProps={{ fontWeight: 'bold' }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} width="100%">
+            <Button
+              variant="outlined"
+              size="large"
+              startIcon={<MenuBook />}
+              href="/ingenieria-en-energia/energia-renovable/cambio-climatico/recursos"
+              sx={{ flex: 1, py: 1.5, borderRadius: 2, textTransform: 'none', fontWeight: 'bold' }}
+            >
+              Ver Recursos
+            </Button>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<Refresh />}
+              onClick={handleStart}
+              sx={{ flex: 1, py: 1.5, borderRadius: 2, textTransform: 'none', fontWeight: 'bold' }}
+            >
+              Reintentar
+            </Button>
+          </Stack>
+        </Stack>
+      </Container>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col items-center justify-center relative overflow-x-hidden font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-[800px] bg-gradient-to-b from-slate-50 to-transparent"></div>
-      <div className="absolute -top-60 -left-60 w-[600px] h-[600px] bg-emerald-100/30 rounded-full blur-[160px]"></div>
-      <div className="absolute top-1/2 -right-60 w-[500px] h-[500px] bg-blue-100/20 rounded-full blur-[160px]"></div>
-
-      <header className="fixed top-4 left-4 right-4 sm:top-8 sm:left-12 sm:right-12 h-20 sm:h-24 flex justify-between items-center bg-white/60 backdrop-blur-3xl z-50 px-8 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/40">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 bg-slate-900 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-2xl shadow-slate-900/30 transform hover:scale-110 transition-transform">
-            E
-          </div>
-          <div className="flex flex-col">
-            <span className="font-black text-slate-900 tracking-tighter text-2xl leading-none italic">ECOEVALUA</span>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1.5 opacity-60">Science & Policy</span>
-          </div>
-        </div>
-
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(to bottom, #f0f9ff, #e0f2fe)' }}>
+      <Box
+        component="header"
+        sx={{
+          py: 3,
+          px: { xs: 3, sm: 6 },
+          background: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" color="primary">
+          Cambio Climático
+        </Typography>
         {currentStep === 'quiz' && (
-          <div className="flex items-center gap-3 bg-emerald-500 text-white px-6 py-3 rounded-[1.5rem] shadow-2xl shadow-emerald-500/40 border border-emerald-400 group">
-            <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse shadow-sm"></div>
-            <span className="text-xs font-black uppercase tracking-[0.2em]">Examen Activo</span>
-          </div>
+          <Chip
+            icon={<Circle sx={{ fontSize: 10, animation: 'pulse 2s infinite' }} />}
+            label="Examen Activo"
+            color="success"
+            size="small"
+          />
         )}
-      </header>
+      </Box>
 
-      <main className="w-full flex items-center justify-center py-40 px-4 sm:px-12 relative z-10 flex-1">
+      <Box component="main">
         {currentStep === 'intro' && renderIntro()}
         {currentStep === 'quiz' && renderQuiz()}
         {currentStep === 'result' && renderResult()}
-      </main>
+      </Box>
 
-      <footer className="w-full py-12 bg-white/80 backdrop-blur-md border-t border-slate-50">
-        <div className="max-w-6xl mx-auto px-12 flex flex-col sm:flex-row justify-between items-center gap-8">
-          <div className="flex gap-10">
-            <a href="/ingenieria-en-energia/energia-renovable/cambio-climatico/recursos" className="text-[12px] font-black text-slate-300 hover:text-slate-900 transition-all uppercase tracking-[0.3em]">Recursos</a>
-            <a href="/ingenieria-en-energia/energia-renovable/cambio-climatico/glosario" className="text-[12px] font-black text-slate-300 hover:text-slate-900 transition-all uppercase tracking-[0.3em]">Glosario</a>
-            <a href="/ingenieria-en-energia/energia-renovable/cambio-climatico/docs" className="text-[12px] font-black text-slate-300 hover:text-slate-900 transition-all uppercase tracking-[0.3em]">Docs</a>
-          </div>
-          <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] flex items-center gap-3">
-            <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-lg shadow-emerald-500/50"></span>
-            Basado en Evidencia Científica
-          </p>
-        </div>
-      </footer>
-    </div>
+      <Box
+        component="footer"
+        sx={{
+          py: 6,
+          px: { xs: 3, sm: 6 },
+          background: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(10px)',
+          borderTop: '1px solid rgba(0, 0, 0, 0.05)'
+        }}
+      >
+        <Container maxWidth="lg">
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={3}
+          >
+            <Stack direction="row" spacing={3}>
+              <Button
+                href="/ingenieria-en-energia/energia-renovable/cambio-climatico/recursos"
+                size="small"
+                sx={{ textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.7rem', fontWeight: 'bold' }}
+              >
+                Recursos
+              </Button>
+              <Button
+                href="/ingenieria-en-energia/energia-renovable/cambio-climatico/glosario"
+                size="small"
+                sx={{ textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.7rem', fontWeight: 'bold' }}
+              >
+                Glosario
+              </Button>
+              <Button
+                href="/ingenieria-en-energia/energia-renovable/cambio-climatico/docs"
+                size="small"
+                sx={{ textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.7rem', fontWeight: 'bold' }}
+              >
+                Docs
+              </Button>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Box
+                sx={{
+                  width: 8,
+                  height: 8,
+                  bgcolor: 'success.main',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 10px rgba(76, 175, 80, 0.5)'
+                }}
+              />
+              <Typography variant="caption" fontWeight="bold" sx={{ textTransform: 'uppercase', letterSpacing: 2 }}>
+                Basado en Evidencia Científica
+              </Typography>
+            </Stack>
+          </Stack>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 
