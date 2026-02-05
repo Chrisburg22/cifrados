@@ -53,7 +53,7 @@ export function useCrypto() {
     let resultado = '';
     for (let letra of mensajeNorm) {
       const p = letraANum(letra);
-      const c = p + k;
+      let c = p + k;
       if ( c >= MOD ) {
        c -= MOD
       }
@@ -67,7 +67,7 @@ export function useCrypto() {
     let resultado = '';
     for (let letra of mensajeNorm) {
       const c = letraANum(letra);
-      const p = c - k ;
+      let p = c - k ;
 
       if(p < 0) {
         p += MOD
@@ -86,7 +86,7 @@ export function useCrypto() {
       const letraClave = claveNorm[i % claveNorm.length];
       const p = letraANum(letraMensaje);
       const k = letraANum(letraClave);
-      const c = p + k;
+      let c = p + k;
        if(c >= MOD){
         c -= MOD 
       }
@@ -104,7 +104,7 @@ export function useCrypto() {
       const letraClave = claveNorm[i % claveNorm.length];
       const c = letraANum(letraMensaje);
       const k = letraANum(letraClave);
-      const p = c - k;
+      let p = c - k;
 
       if(p < 0){
         p += MOD 
