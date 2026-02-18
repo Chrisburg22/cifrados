@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Metodologías Ágiles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #fcfcfc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .node-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .node {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            max-width: 280px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .connector {
+            width: 2px;
+            height: 40px;
+            background-color: #cbd5e1;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .detail-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            z-index: 50;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 40;
+        }
+
+        .active {
+            display: block !important;
+        }
+
+        .line-horizontal {
+            height: 2px;
+            background-color: #cbd5e1;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+    <!-- Chosen Palette: Slate & Blue (Profesionalismo y Claridad) -->
+    <!-- Application Structure Plan: 
+         Se diseña una estructura jerárquica (Top-Down) típica de un mapa conceptual.
+         1. Nodo Raíz: Metodologías Ágiles.
+         2. Nivel 1: Conceptos y Manifiesto.
+         3. Nivel 2: Marcos de trabajo específicos (Scrum, Kanban, XP).
+         Interacción: Al hacer clic en cada nodo, se despliega un panel lateral/modal con el contenido completo (Ventajas, Desventajas y Conclusión) para evitar sobrecarga visual en el mapa inicial.
+    -->
+    <!-- Visualization & Content Choices:
+         - Estructura de Nodos: HTML/Tailwind para mayor flexibilidad de respuesta que un SVG estático.
+         - Interactividad: JS Vanilla para manejar estados y modales.
+         - Justificación: Los mapas conceptuales pueden volverse ilegibles en móviles; esta versión interactiva prioriza la legibilidad adaptando la disposición de las ramas.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white border-b p-6 text-center">
+        <h1 class="text-3xl font-bold text-slate-900">Mapa Conceptual Interactivo</h1>
+        <p class="text-slate-500 mt-2">Explora las características, ventajas y desventajas de las metodologías ágiles</p>
+    </header>
+
+    <main class="node-container max-w-7xl mx-auto">
+        
+        <!-- Nivel Raíz -->
+        <div class="node text-center border-blue-500 bg-blue-50" onclick="showDetail('root')">
+            <h2 class="font-bold text-blue-700 text-xl">Metodologías Ágiles</h2>
+            <p class="text-xs text-blue-600 mt-1 italic">Click para ver definición</p>
+        </div>
+
+        <div class="connector"></div>
+
+        <!-- Ramas de Metodologías -->
+        <div class="branch-container">
+            
+            <!-- Scrum -->
+            <div class="flex flex-col items-center">
+                <div class="node" onclick="showDetail('scrum')">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded mb-2 inline-block">MARCO</span>
+                    <h3 class="font-bold text-lg">SCRUM</h3>
+                    <p class="text-sm text-slate-500 mt-2">Roles, Sprints y Daily Stand-ups para proyectos complejos.</p>
+                </div>
+                <div class="connector"></div>
+                <div class="text-xs text-slate-400 font-bold">Ideal para: Productos Nuevos</div>
+            </div>
+
+            <!-- Kanban -->
+            <div class="flex flex-col items-center">
+                <div class="node" onclick="showDetail('kanban')">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded mb-2 inline-block">MÉTODO</span>
+                    <h3 class="font-bold text-lg">KANBAN</h3>
+                    <p class="text-sm text-slate-500 mt-2">Tableros visuales y flujo continuo sin sprints fijos.</p>
+                </div>
+                <div class="connector"></div>
+                <div class="text-xs text-slate-400 font-bold">Ideal para: Mantenimiento</div>
+            </div>
+
+            <!-- XP -->
+            <div class="flex flex-col items-center">
+                <div class="node" onclick="showDetail('xp')">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded mb-2 inline-block">INGENIERÍA</span>
+                    <h3 class="font-bold text-lg">XP</h3>
+                    <p class="text-sm text-slate-500 mt-2">Programación extrema con TDD y excelencia técnica.</p>
+                </div>
+                <div class="connector"></div>
+                <div class="text-xs text-slate-400 font-bold">Ideal para: Calidad Crítica</div>
+            </div>
+
+        </div>
+
+        <!-- Pie de página informativo -->
+        <div class="mt-12 p-6 bg-slate-100 rounded-lg text-sm text-slate-600 max-w-2xl text-center">
+            <p><strong>Nota:</strong> Este mapa conceptual desglosa la información del reporte proporcionado. Haz clic en los cuadros superiores para explorar las ventajas, desventajas y contextos específicos de cada enfoque.</p>
+        </div>
+    </main>
+
+    <!-- UI Elements: Overlay and Detail Panel -->
+    <div id="overlay" class="overlay" onclick="hideDetail()"></div>
+    
+    <div id="detail-panel" class="detail-panel">
+        <div class="flex justify-between items-start mb-4">
+            <h2 id="panel-title" class="text-2xl font-bold">Título</h2>
+            <button onclick="hideDetail()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        <div id="panel-content" class="space-y-4">
+            <!-- Dinámico -->
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            root: {
+                title: "Conceptos Generales",
+                content: `
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <p class="font-bold text-blue-800">Definición:</p>
+                        <p class="text-slate-700">Enfoques de desarrollo basados en el desarrollo iterativo e incremental.</p>
+                    </div>
+                    <div class="mt-4">
+                        <p class="font-bold">Prioridades del Manifiesto Ágil:</p>
+                        <ul class="list-disc list-inside mt-2 space-y-1 text-slate-600">
+                            <li>Individuos e interacciones sobre procesos.</li>
+                            <li>Software funcional sobre documentación extensiva.</li>
+                            <li>Colaboración con el cliente sobre negociación contractual.</li>
+                            <li>Respuesta ante el cambio sobre seguir un plan.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            scrum: {
+                title: "Detalles de SCRUM",
+                content: `
+                    <p class="text-slate-600">Marco para gestionar proyectos complejos mediante roles específicos y ciclos temporales fijos.</p>
+                    <div>
+                        <p class="font-bold text-emerald-600">Ventajas:</p>
+                        <p class="text-sm">Adaptación a cambios, transparencia y compromiso del equipo.</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-rose-600">Desventajas:</p>
+                        <p class="text-sm">Difícil de escalar, riesgo de "scope creep" y requiere personal altamente calificado.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border rounded text-xs">
+                        <strong>Contexto de Falla:</strong> Proyectos con presupuesto y tiempo cerrados.
+                    </div>
+                `
+            },
+            kanban: {
+                title: "Detalles de KANBAN",
+                content: `
+                    <p class="text-slate-600">Método visual centrado en la entrega continua y la visualización del flujo de trabajo.</p>
+                    <div>
+                        <p class="font-bold text-emerald-600">Ventajas:</p>
+                        <p class="text-sm">Extremadamente flexible, reduce cuellos de botella visualmente.</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-rose-600">Desventajas:</p>
+                        <p class="text-sm">Puede volverse caótico sin mantenimiento, falta de roles definidos.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border rounded text-xs">
+                        <strong>Contexto de Falla:</strong> Equipos que necesitan hitos rígidos.
+                    </div>
+                `
+            },
+            xp: {
+                title: "Detalles de XP",
+                content: `
+                    <p class="text-slate-600">Metodología centrada en la excelencia técnica y calidad mediante prácticas como TDD y Pair Programming.</p>
+                    <div>
+                        <p class="font-bold text-emerald-600">Ventajas:</p>
+                        <p class="text-sm">Software con mínimos defectos y propiedad colectiva del código.</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-rose-600">Desventajas:</p>
+                        <p class="text-sm">Percepción de costo inicial alto, difícil en equipos distribuidos.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border rounded text-xs">
+                        <strong>Contexto de Falla:</strong> Equipos con resistencia cultural o preferencia por trabajo individual.
+                    </div>
+                `
+            }
+        };
+
+        function showDetail(id) {
+            const panel = document.getElementById('detail-panel');
+            const overlay = document.getElementById('overlay');
+            const title = document.getElementById('panel-title');
+            const content = document.getElementById('panel-content');
+
+            title.innerText = data[id].title;
+            content.innerHTML = data[id].content;
+
+            panel.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        function hideDetail() {
+            document.getElementById('detail-panel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
