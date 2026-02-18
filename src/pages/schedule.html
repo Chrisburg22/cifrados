@@ -3,79 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan de Vida Christian - Alta Eficiencia</title>
+    <title>Plan Melisa: Nutrición, Deporte y Vida</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        .day-active { background-color: #4f46e5; color: white; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); }
-        .block-card { transition: transform 0.1s; }
-        .block-card:hover { transform: scale(1.01); }
-        .tag { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; }
-        .tag-work { background: #fef3c7; color: #92400e; }
-        .tag-study { background: #e0e7ff; color: #3730a3; }
-        .tag-train { background: #dcfce7; color: #166534; }
-        .tag-dog { background: #ffedd5; color: #9a3412; }
-        .tag-rest { background: #f1f5f9; color: #475569; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .day-btn-active { background: #4f46e5; color: white; transform: translateX(5px); }
+        .card-timeline { border-left: 4px solid #e2e8f0; transition: all 0.2s; }
+        .card-timeline:hover { border-left-color: #4f46e5; background: white; }
+        .tag-snack { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; } /* Pre/Post Entreno */
+        .tag-train { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+        .tag-work { background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; }
+        .tag-dog { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
-    <!-- Header -->
-    <header class="bg-indigo-900 text-white p-4 shadow-lg flex justify-between items-center z-50">
+    <header class="bg-white border-b border-slate-200 p-4 flex justify-between items-center z-50">
         <div class="flex items-center gap-3">
-            <i class="fas fa-dog text-2xl text-orange-400"></i>
+            <div class="bg-indigo-600 p-2 rounded-xl text-white">
+                <i class="fas fa-bolt"></i>
+            </div>
             <div>
-                <h1 class="font-bold text-lg leading-none">Sistema Christian 24/7</h1>
-                <p class="text-[10px] text-indigo-300 mt-1 uppercase tracking-widest">Trabajo · Estudio · Deporte · Mascota</p>
+                <h1 class="font-extrabold text-slate-900 text-lg leading-none">Melisa Performance v2</h1>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Nutrición Deportiva + Gestión 24/7</p>
             </div>
         </div>
-        <button onclick="downloadExcel()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2">
-            <i class="fas fa-file-csv"></i> Exportar Horario
+        <button onclick="downloadExcel()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition">
+            <i class="fas fa-file-export"></i> Descargar Plan Completo
         </button>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         
-        <!-- Sidebar -->
-        <nav class="w-20 md:w-64 bg-white border-r border-slate-200 overflow-y-auto p-4 flex flex-col gap-2 shrink-0">
-            <div id="day-selector" class="space-y-2">
-                <!-- Injected by JS -->
-            </div>
-            <div class="mt-auto p-4 bg-slate-50 rounded-xl border border-slate-100 hidden md:block">
-                <h4 class="text-[10px] font-black text-slate-400 uppercase mb-2">Resumen Semanal</h4>
-                <p class="text-[11px] text-slate-600 leading-tight">Salsa: 2h (Ma-Mi-Ju)<br>Fútbol: Lu-Vi-Do<br>Trabajo: 2h/día</p>
+        <!-- Sidebar: Días -->
+        <nav class="w-20 md:w-64 bg-white border-r border-slate-200 p-4 flex flex-col gap-2 overflow-y-auto">
+            <div id="nav-days" class="space-y-1">
+                <!-- JS -->
             </div>
         </nav>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-slate-50">
+        <!-- Main: Timeline -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
             <div class="max-w-3xl mx-auto">
-                <div id="day-header" class="mb-6">
-                    <!-- Dynamic Title -->
+                <div id="day-header" class="mb-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                    <!-- JS -->
                 </div>
 
                 <div id="timeline" class="space-y-3">
-                    <!-- Dynamic Blocks -->
+                    <!-- JS -->
                 </div>
             </div>
         </main>
 
-        <!-- Right Panel (Shopping & Stats) -->
-        <aside class="w-80 bg-white border-l border-slate-200 hidden xl:flex flex-col p-6 shrink-0 overflow-y-auto">
-            <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
-                <i class="fas fa-shopping-cart text-indigo-600"></i> Carrito de Tienda
-            </h3>
-            
-            <div id="shopping-list" class="space-y-3 mb-8">
-                <!-- JS -->
+        <!-- Right: Shopping & Macros -->
+        <aside class="w-80 bg-white border-l border-slate-200 hidden lg:flex flex-col p-6 overflow-y-auto">
+            <div class="mb-8">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Combustible de Tienda</h3>
+                <div id="shopping-list" class="space-y-2">
+                    <!-- JS -->
+                </div>
             </div>
 
-            <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
-                <h4 class="text-xs font-bold text-indigo-700 uppercase mb-3">Hack de Recuperación</h4>
-                <p class="text-[11px] text-indigo-600 leading-relaxed">
-                    Tu descanso de 1h úsalo para **desconexión digital**. Si vienes de estudiar o trabajar, aleja el móvil para reducir el cortisol antes de ir a Salsa o Fútbol.
+            <div class="p-5 rounded-2xl bg-pink-50 border border-pink-100 mb-6">
+                <h4 class="text-[10px] font-black text-pink-700 uppercase mb-2 italic">Leyenda Nutricional</h4>
+                <p class="text-[11px] text-pink-900 leading-relaxed font-medium">
+                    <span class="font-bold">Pre-Entreno:</span> Carbos rápidos (Fruta/Barrita) para energía inmediata.<br><br>
+                    <span class="font-bold">Post-Entreno:</span> Proteína + Carbo (Batido/Yogurt) para reparar tejido y reponer glucógeno.
                 </p>
             </div>
         </aside>
@@ -84,101 +80,98 @@
     <script>
         const schedule = {
             "Lunes": {
-                goal: "Gym + Fútbol + Clases (9-1pm)",
+                info: "Fuerza Tren Superior + Fútbol + Clases (9-1pm)",
                 items: [
-                    { t: "06:30", type: "train", l: "Gym Tren Superior", d: "Rutina Christian: Fuerza + Aeróbico." },
-                    { t: "07:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min. Activación matutina." },
-                    { t: "08:00", type: "meal", l: "Desayuno Tienda", d: "Avena vaso + Yogurt griego (Fácil digestión)." },
-                    { t: "09:00", type: "class", l: "UNIVERSIDAD (Bloque 1)", d: "Clases hasta la 1:00 PM." },
-                    { t: "13:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min. Después de clases." },
-                    { t: "13:30", type: "meal", l: "Almuerzo Rápido", d: "Ensalada domo + Atún en sobre (Tienda)." },
-                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Bloque único de alta concentración." },
-                    { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso de temas de clase." },
-                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Siesta corta o lectura sin pantallas." },
-                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Entrega de trabajos." },
-                    { t: "19:30", type: "meal", l: "Pre-Fútbol", d: "Plátano + Barrita de proteína (Tienda)." },
-                    { t: "20:00", type: "dog", l: "Paseo Perro (3/3)", d: "10 min antes de ir al fútbol." },
-                    { t: "20:30", type: "train", l: "Fútbol Rápido", d: "Partido nocturno." },
-                    { t: "22:30", type: "meal", l: "Cena", d: "Atún + Galletas saladas + Aguacate." }
+                    { t: "06:30", type: "train", l: "GYM TREN SUPERIOR", d: "Rutina Melisa: Fuerza + Aeróbico." },
+                    { t: "07:30", type: "snack", l: "POST-ENTRENO (Tienda)", d: "Batido de proteína RTD + 1 Plátano (Reparación)." },
+                    { t: "07:50", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
+                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "Clases hasta 1:00 PM." },
+                    { t: "11:30", type: "snack", l: "COLACIÓN MEDIA MAÑANA", d: "Mix de frutos secos (Energía estable)." },
+                    { t: "13:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
+                    { t: "13:30", type: "meal", l: "ALMUERZO (Tienda)", d: "Ensalada domo + Atún en sobre + Galletas saladas." },
+                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Bloque de enfoque." },
+                    { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso académico." },
+                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Desconexión total." },
+                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Resolución de trabajos." },
+                    { t: "19:30", type: "snack", l: "PRE-FÚTBOL (Tienda)", d: "Café negro + Barrita de avena/carbo (Energía rápida)." },
+                    { t: "20:00", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
+                    { t: "20:30", type: "train", l: "FÚTBOL RÁPIDO", d: "Partido de alta intensidad." },
+                    { t: "22:30", type: "meal", l: "CENA POST-FÚTBOL", d: "Sándwich de pavo/queso + Aguacate (Recuperación)." }
                 ],
-                store: ["Avena en vaso", "Yogurt Griego", "Ensalada domo", "Atún (2 sobres)", "Barrita Proteína"]
+                store: ["Batido Prot. RTD", "Plátano", "Frutos secos", "Ensalada Domo", "Atún sobre", "Barrita Avena"]
             },
             "Martes": {
-                goal: "Pierna + Salsa (2h)",
+                info: "Fuerza Piernas + Salsa (2h)",
                 items: [
-                    { t: "07:30", type: "train", l: "Gym Piernas", d: "Rutina Christian: Skiping, Yoguis + Fuerza." },
-                    { t: "08:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
-                    { t: "09:00", type: "study", l: "ESTUDIO (1H)", d: "Repaso matutino." },
-                    { t: "10:00", type: "work", l: "TRABAJO (2H)", d: "Bloque laboral." },
-                    { t: "12:00", type: "meal", l: "Almuerzo Rápido", d: "Pasta precocida + Atún." },
-                    { t: "13:00", type: "rest", l: "DESCANSO (1H)", d: "Recuperación tras pierna." },
-                    { t: "14:00", type: "study", l: "TAREAS (1H)", d: "Avance de proyectos." },
-                    { t: "15:30", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
-                    { t: "18:00", type: "meal", l: "Pre-Salsa", d: "Sándwich de pavo/queso (Tienda)." },
-                    { t: "19:45", type: "dog", l: "Paseo Perro (3/3)", d: "10 min previo a salsa." },
-                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Cardio intenso." },
-                    { t: "22:15", type: "meal", l: "Cena", d: "Leche chocolatada + Semillas de calabaza." }
+                    { t: "07:30", type: "train", l: "GYM PIERNAS", d: "Rutina Melisa: Skiping + Sentadilla + Peso Muerto." },
+                    { t: "08:45", type: "snack", l: "POST-PIERNA (Tienda)", d: "Yogurt griego alto en proteína + Granola." },
+                    { t: "09:10", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
+                    { t: "09:30", type: "study", l: "ESTUDIO (1H)", d: "Foco matutino." },
+                    { t: "10:30", type: "work", l: "TRABAJO (2H)", d: "Productividad." },
+                    { t: "12:30", type: "meal", l: "ALMUERZO", d: "Bowl de pasta preparada (Tienda) + Atún sobre." },
+                    { t: "14:00", type: "rest", l: "DESCANSO (1H)", d: "Recuperación física." },
+                    { t: "15:30", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
+                    { t: "16:00", type: "study", l: "TAREAS (1H)", d: "Avance académico." },
+                    { t: "18:00", type: "snack", l: "PRE-SALSA (2H)", d: "Sándwich de pavo + Jugo de naranja (Carbos para 120 min de baile)." },
+                    { t: "19:45", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
+                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Sesión intensa." },
+                    { t: "22:15", type: "meal", l: "CENA RECUPERADORA", d: "Leche chocolatada (RTD) + Puñado de semillas (Magnesio)." }
                 ],
-                store: ["Pasta preparada", "Sándwich listo", "Leche chocolatada", "Semillas de calabaza"]
+                store: ["Yogurt Griego", "Granola", "Pasta pack", "Atún sobre", "Leche chocolate"]
             },
             "Miércoles": {
-                goal: "Running + Salsa (2h) + Clases (9-1pm)",
+                info: "Fartlek + Salsa (2h) + Clases (9-1pm)",
                 items: [
-                    { t: "07:00", type: "train", l: "Fartlek Running", d: "25 min intensidad variable." },
-                    { t: "07:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
-                    { t: "08:00", type: "meal", l: "Desayuno", d: "Huevo cocido (pack tienda) + Fruta." },
-                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "Clases hasta la 1:00 PM." },
-                    { t: "13:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
-                    { t: "13:30", type: "meal", l: "Almuerzo", d: "Bowl de pollo/vegetales (Tienda)." },
-                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Bloque concentrado." },
-                    { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Foco académico." },
-                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Pausa mental." },
-                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Avance de semana." },
-                    { t: "19:45", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
-                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Cardio técnico." },
-                    { t: "22:15", type: "meal", l: "Cena", d: "Ensalada César con pollo (Tienda)." }
+                    { t: "07:00", type: "train", l: "FARTLEK RUNNING", d: "6x 3min trote x 45” velocidad (25 min)." },
+                    { t: "07:45", type: "snack", l: "POST-RUN (Tienda)", d: "Barrita de proteína + Electrolitos." },
+                    { t: "08:15", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
+                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "9 AM a 1 PM." },
+                    { t: "13:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
+                    { t: "13:30", type: "meal", l: "ALMUERZO", d: "Bowl de pollo/quinoa precocido (Tienda)." },
+                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Foco laboral." },
+                    { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso." },
+                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Desconexión." },
+                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Entregas." },
+                    { t: "19:30", type: "snack", l: "PRE-SALSA (Tienda)", d: "Manzana + Puñado de almendras." },
+                    { t: "19:50", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
+                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Continuidad técnica." },
+                    { t: "22:15", type: "meal", l: "CENA", d: "Ensalada de Atún + Galletas integrales." }
                 ],
-                store: ["Huevo cocido pack", "Bowl pollo", "Ensalada César"]
-            },
-            "Viernes": {
-                goal: "Fútbol + Clases (1-5pm)",
-                items: [
-                    { t: "08:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
-                    { t: "09:00", type: "work", l: "TRABAJO (2H)", d: "Sacar pendientes antes de Uni." },
-                    { t: "11:00", type: "study", l: "ESTUDIO (1H)", d: "Preparación para clase." },
-                    { t: "12:00", type: "meal", l: "Almuerzo", d: "Pasta + Atún." },
-                    { t: "13:00", type: "class", l: "UNIVERSIDAD", d: "Clase presencial hasta las 5:00 PM." },
-                    { t: "17:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min al salir." },
-                    { t: "17:30", type: "study", l: "TAREAS (1H)", d: "Liquidar tareas pendientes." },
-                    { t: "18:30", type: "rest", l: "DESCANSO (1H)", d: "Preparación para fútbol." },
-                    { t: "19:45", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
-                    { t: "20:00", type: "train", l: "Fútbol", d: "Partido semanal." },
-                    { t: "22:00", type: "meal", l: "Cena", d: "Tostadas de pollo (Tienda)." }
-                ],
-                store: ["Pasta pack", "Pollo asado listo"]
-            },
-            "Sábado": {
-                goal: "Clase (8-10am) + Tareas",
-                items: [
-                    { t: "07:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
-                    { t: "08:00", type: "class", l: "UNIVERSIDAD", d: "Clase matutina." },
-                    { t: "10:15", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
-                    { t: "10:30", type: "meal", l: "Brunch", d: "Yogurt con granola + Fruta." },
-                    { t: "11:30", type: "work", l: "TRABAJO (2H)", d: "Bloque final de semana." },
-                    { t: "13:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso." },
-                    { t: "14:30", type: "study", l: "TAREAS (1H)", d: "Finalizar entregas." },
-                    { t: "15:30", type: "rest", l: "DESCANSO (1H)", d: "Tiempo libre." },
-                    { t: "18:00", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." }
-                ],
-                store: ["Granola", "Yogurt Griego"]
+                store: ["Electrolitos", "Bowl Pollo", "Almendras", "Galletas integrales"]
             }
         };
 
-        // Rellenar Jueves y Domingo con estructura similar
-        schedule["Jueves"] = JSON.parse(JSON.stringify(schedule["Martes"]));
-        schedule["Jueves"].goal = "Salsa (2h)";
-        schedule["Domingo"] = JSON.parse(JSON.stringify(schedule["Sábado"]));
-        schedule["Domingo"].goal = "Fútbol (Opcional) + Descanso";
+        // Copiar Jueves/Viernes/Sábado para el ejemplo
+        schedule["Jueves"] = {...schedule["Martes"], info: "Salsa (2h)"};
+        schedule["Viernes"] = {
+            info: "Fútbol + Clases (1-5pm)",
+            items: [
+                { t: "08:30", type: "work", l: "TRABAJO (2H)", d: "Bloque matutino." },
+                { t: "10:30", type: "snack", l: "COLACIÓN MATUTINA", d: "Fruta + Yogurt." },
+                { t: "11:30", type: "study", l: "ESTUDIO (1H)", d: "Foco académico." },
+                { t: "12:30", type: "meal", l: "ALMUERZO PRE-CLASE", d: "Sándwich de pollo (Tienda)." },
+                { t: "13:00", type: "class", l: "UNIVERSIDAD", d: "Clase hasta las 5:00 PM." },
+                { t: "17:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
+                { t: "17:30", type: "study", l: "TAREAS (1H)", d: "Último empujón." },
+                { t: "18:30", type: "rest", l: "DESCANSO (1H)", d: "Relajación." },
+                { t: "19:30", type: "snack", l: "PRE-FÚTBOL", d: "Barrita energética + Agua." },
+                { t: "20:00", type: "train", l: "FÚTBOL", d: "Partido/Entreno." },
+                { t: "22:00", type: "meal", l: "CENA", d: "Atún en sobre + Aguacate." }
+            ],
+            store: ["Sándwich pollo", "Barrita", "Atún"]
+        };
+        schedule["Sábado"] = {
+            info: "Clase (8-10am) + Tareas",
+            items: [
+                { t: "07:30", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
+                { t: "08:00", type: "class", l: "UNIVERSIDAD", d: "Clase matutina." },
+                { t: "10:30", type: "meal", l: "BRUNCH", d: "Huevos cocidos pack + Fruta." },
+                { t: "12:00", type: "work", l: "TRABAJO (2H)", d: "Finalizar semana." },
+                { t: "14:00", type: "study", l: "TAREAS (1H)", d: "Limpieza académica." },
+                { t: "15:00", type: "rest", l: "DESCANSO (1H)", d: "Libre." }
+            ],
+            store: ["Huevo cocido pack", "Fruta"]
+        };
 
         let currentDay = "Lunes";
 
@@ -186,20 +179,19 @@
             currentDay = day;
             const data = schedule[day];
             
-            // UI
-            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-active'));
-            document.getElementById(`btn-${day}`).classList.add('day-active');
+            // Nav
+            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
+            document.getElementById(`btn-${day}`).classList.add('day-btn-active');
 
             // Header
             document.getElementById('day-header').innerHTML = `
-                <div class="flex items-end justify-between">
+                <div class="flex justify-between items-start">
                     <div>
-                        <h2 class="text-3xl font-black text-slate-800 tracking-tighter">${day}</h2>
-                        <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest mt-1">${data.goal}</p>
+                        <h2 class="text-3xl font-extrabold text-slate-900">${day}</h2>
+                        <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest mt-1">${data.info}</p>
                     </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-black text-slate-400 block uppercase">Foco Mental</span>
-                        <span class="text-xs font-bold text-slate-700">Equilibrio & Perro</span>
+                    <div class="bg-indigo-50 px-3 py-1 rounded-full text-[10px] font-bold text-indigo-700 border border-indigo-100 uppercase">
+                        Energía: ${day === 'Lunes' ? 'Máxima' : 'Media-Alta'}
                     </div>
                 </div>
             `;
@@ -209,15 +201,15 @@
             tl.innerHTML = '';
             data.items.forEach(i => {
                 const card = document.createElement('div');
-                card.className = "block-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-center";
+                card.className = "card-timeline bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4 items-center";
                 card.innerHTML = `
-                    <div class="w-12 text-xs font-black text-slate-400 border-r pr-2">${i.t}</div>
+                    <div class="w-12 text-[10px] font-black text-slate-400 border-r pr-2">${i.t}</div>
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="tag tag-${i.type}">${i.type}</span>
-                            <h4 class="text-sm font-bold text-slate-800 uppercase tracking-tight">${i.l}</h4>
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full uppercase tag-${i.type}">${i.type}</span>
+                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-tight">${i.l}</h4>
                         </div>
-                        <p class="text-[11px] text-slate-500 leading-none">${i.d}</p>
+                        <p class="text-[11px] text-slate-500 leading-tight">${i.d}</p>
                     </div>
                 `;
                 tl.appendChild(card);
@@ -229,13 +221,13 @@
             data.store.forEach(s => {
                 const item = document.createElement('div');
                 item.className = "flex items-center gap-2 text-xs text-slate-600 p-2 bg-slate-50 rounded-lg border border-slate-100";
-                item.innerHTML = `<i class="fas fa-check text-indigo-400"></i> ${s}`;
+                item.innerHTML = `<i class="fas fa-check text-pink-400"></i> ${s}`;
                 shop.appendChild(item);
             });
         }
 
         function renderNav() {
-            const container = document.getElementById('day-selector');
+            const container = document.getElementById('nav-days');
             Object.keys(schedule).forEach(day => {
                 const b = document.createElement('button');
                 b.id = `btn-${day}`;
@@ -251,13 +243,13 @@
             Object.keys(schedule).forEach(day => {
                 const data = schedule[day];
                 const content = [
-                    ["HORA", "TIPO", "ACTIVIDAD", "NOTAS"],
+                    ["HORARIO", "CATEGORÍA", "ACTIVIDAD / COMIDA", "NOTAS DE RENDIMIENTO"],
                     ...data.items.map(i => [i.t, i.type.toUpperCase(), i.l, i.d])
                 ];
                 const ws = XLSX.utils.aoa_to_sheet(content);
                 XLSX.utils.book_append_sheet(wb, ws, day);
             });
-            XLSX.writeFile(wb, "Plan_Integral_Christian_Optimizado.xlsx");
+            XLSX.writeFile(wb, "Plan_Melisa_Rendimiento_V2.xlsx");
         }
 
         window.onload = () => { renderNav(); selectDay("Lunes"); };
