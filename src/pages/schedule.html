@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan Melisa: Nutrición, Deporte y Vida</title>
+    <title>Plan Maestro Melisa: 3 Comidas + 4 Colaciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .day-btn-active { background: #4f46e5; color: white; transform: translateX(5px); }
-        .card-timeline { border-left: 4px solid #e2e8f0; transition: all 0.2s; }
-        .card-timeline:hover { border-left-color: #4f46e5; background: white; }
-        .tag-snack { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; } /* Pre/Post Entreno */
-        .tag-train { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-        .tag-work { background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; }
-        .tag-dog { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+        .day-active { background: #4f46e5 !important; color: white !important; }
+        .meal-main { border-left: 4px solid #4f46e5; background: #f5f3ff; }
+        .meal-snack { border-left: 4px solid #ec4899; background: #fdf2f8; }
+        .activity-block { border-left: 4px solid #94a3b8; background: #f8fafc; }
+        .dog-block { border-left: 4px solid #10b981; background: #f0fdf4; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
@@ -24,54 +22,51 @@
     <header class="bg-white border-b border-slate-200 p-4 flex justify-between items-center z-50">
         <div class="flex items-center gap-3">
             <div class="bg-indigo-600 p-2 rounded-xl text-white">
-                <i class="fas fa-bolt"></i>
+                <i class="fas fa-utensils"></i>
             </div>
             <div>
-                <h1 class="font-extrabold text-slate-900 text-lg leading-none">Melisa Performance v2</h1>
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Nutrición Deportiva + Gestión 24/7</p>
+                <h1 class="font-extrabold text-slate-900 text-lg leading-none">Plan Nutricional Melisa</h1>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">3 Comidas Principales + 4 Colaciones</p>
             </div>
         </div>
-        <button onclick="downloadExcel()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition">
-            <i class="fas fa-file-export"></i> Descargar Plan Completo
+        <button onclick="downloadExcel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2">
+            <i class="fas fa-download"></i> Exportar Calendario
         </button>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         
-        <!-- Sidebar: Días -->
-        <nav class="w-20 md:w-64 bg-white border-r border-slate-200 p-4 flex flex-col gap-2 overflow-y-auto">
-            <div id="nav-days" class="space-y-1">
-                <!-- JS -->
+        <!-- Navegación lateral -->
+        <nav class="w-20 md:w-64 bg-white border-r border-slate-200 p-4 flex flex-col gap-2 overflow-y-auto shrink-0">
+            <div id="day-buttons" class="space-y-1">
+                <!-- Injected by JS -->
             </div>
         </nav>
 
-        <!-- Main: Timeline -->
+        <!-- Contenido principal -->
         <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
             <div class="max-w-3xl mx-auto">
-                <div id="day-header" class="mb-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                <div id="day-info" class="mb-6">
                     <!-- JS -->
                 </div>
 
-                <div id="timeline" class="space-y-3">
+                <div id="timeline" class="space-y-2">
                     <!-- JS -->
                 </div>
             </div>
         </main>
 
-        <!-- Right: Shopping & Macros -->
-        <aside class="w-80 bg-white border-l border-slate-200 hidden lg:flex flex-col p-6 overflow-y-auto">
-            <div class="mb-8">
-                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Combustible de Tienda</h3>
-                <div id="shopping-list" class="space-y-2">
-                    <!-- JS -->
-                </div>
+        <!-- Panel lateral de Tienda -->
+        <aside class="w-80 bg-white border-l border-slate-200 hidden xl:flex flex-col p-6 overflow-y-auto shrink-0">
+            <h3 class="font-black text-slate-400 text-[10px] uppercase tracking-widest mb-4">Combustible de Tienda</h3>
+            <div id="shopping-list" class="space-y-2 mb-6">
+                <!-- JS -->
             </div>
-
-            <div class="p-5 rounded-2xl bg-pink-50 border border-pink-100 mb-6">
-                <h4 class="text-[10px] font-black text-pink-700 uppercase mb-2 italic">Leyenda Nutricional</h4>
-                <p class="text-[11px] text-pink-900 leading-relaxed font-medium">
-                    <span class="font-bold">Pre-Entreno:</span> Carbos rápidos (Fruta/Barrita) para energía inmediata.<br><br>
-                    <span class="font-bold">Post-Entreno:</span> Proteína + Carbo (Batido/Yogurt) para reparar tejido y reponer glucógeno.
+            
+            <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                <h4 class="text-xs font-bold text-amber-800 mb-2">Regla de Oro</h4>
+                <p class="text-[11px] text-amber-700 leading-relaxed">
+                    Las colaciones evitan que el metabolismo se detenga. No te saltes el **Snack 4 (Recuperación)** tras la salsa o fútbol; es clave para evitar lesiones y dormir mejor.
                 </p>
             </div>
         </aside>
@@ -80,97 +75,97 @@
     <script>
         const schedule = {
             "Lunes": {
-                info: "Fuerza Tren Superior + Fútbol + Clases (9-1pm)",
+                desc: "Gym Tren Superior + Fútbol + Clases (9-1pm)",
                 items: [
-                    { t: "06:30", type: "train", l: "GYM TREN SUPERIOR", d: "Rutina Melisa: Fuerza + Aeróbico." },
-                    { t: "07:30", type: "snack", l: "POST-ENTRENO (Tienda)", d: "Batido de proteína RTD + 1 Plátano (Reparación)." },
-                    { t: "07:50", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
-                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "Clases hasta 1:00 PM." },
-                    { t: "11:30", type: "snack", l: "COLACIÓN MEDIA MAÑANA", d: "Mix de frutos secos (Energía estable)." },
-                    { t: "13:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
-                    { t: "13:30", type: "meal", l: "ALMUERZO (Tienda)", d: "Ensalada domo + Atún en sobre + Galletas saladas." },
-                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Bloque de enfoque." },
+                    { t: "06:15", type: "snack", l: "Snack 1: Pre-Entreno", d: "Café + Galleta de avena (Energía para el gym)." },
+                    { t: "06:30", type: "train", l: "GYM TREN SUPERIOR", d: "Rutina Melisa." },
+                    { t: "07:30", type: "snack", l: "Snack 2: Post-Entreno", d: "Batido Prot. RTD + Plátano (Reparación)." },
+                    { t: "07:50", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
+                    { t: "08:15", type: "meal", l: "DESAYUNO", d: "Avena lista + Yogurt griego (Tienda)." },
+                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "Bloque 9am - 1pm." },
+                    { t: "11:00", type: "snack", l: "Snack 3: Colación Media Mañana", d: "Mix frutos secos (Control de saciedad)." },
+                    { t: "13:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
+                    { t: "13:30", type: "meal", l: "ALMUERZO", d: "Ensalada domo + Atún pouch + Galletas integrales." },
+                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Foco laboral." },
                     { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso académico." },
-                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Desconexión total." },
-                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Resolución de trabajos." },
-                    { t: "19:30", type: "snack", l: "PRE-FÚTBOL (Tienda)", d: "Café negro + Barrita de avena/carbo (Energía rápida)." },
-                    { t: "20:00", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
-                    { t: "20:30", type: "train", l: "FÚTBOL RÁPIDO", d: "Partido de alta intensidad." },
-                    { t: "22:30", type: "meal", l: "CENA POST-FÚTBOL", d: "Sándwich de pavo/queso + Aguacate (Recuperación)." }
+                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Desconexión." },
+                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Entrega de trabajos." },
+                    { t: "19:30", type: "snack", l: "Snack 4: Pre-Fútbol", d: "Barrita energética + Manzana." },
+                    { t: "20:00", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
+                    { t: "20:30", type: "train", l: "FÚTBOL RÁPIDO", d: "Partido." },
+                    { t: "22:15", type: "meal", l: "CENA", d: "Sándwich de pavo/queso + Aguacate (Tienda)." }
                 ],
-                store: ["Batido Prot. RTD", "Plátano", "Frutos secos", "Ensalada Domo", "Atún sobre", "Barrita Avena"]
+                store: ["Batido Prot. RTD", "Mix frutos secos", "Atún Pouch", "Ensalada Domo", "Barrita energética", "Sándwich preparado"]
             },
             "Martes": {
-                info: "Fuerza Piernas + Salsa (2h)",
+                desc: "Gym Piernas + Salsa (2h)",
                 items: [
-                    { t: "07:30", type: "train", l: "GYM PIERNAS", d: "Rutina Melisa: Skiping + Sentadilla + Peso Muerto." },
-                    { t: "08:45", type: "snack", l: "POST-PIERNA (Tienda)", d: "Yogurt griego alto en proteína + Granola." },
-                    { t: "09:10", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
-                    { t: "09:30", type: "study", l: "ESTUDIO (1H)", d: "Foco matutino." },
-                    { t: "10:30", type: "work", l: "TRABAJO (2H)", d: "Productividad." },
-                    { t: "12:30", type: "meal", l: "ALMUERZO", d: "Bowl de pasta preparada (Tienda) + Atún sobre." },
-                    { t: "14:00", type: "rest", l: "DESCANSO (1H)", d: "Recuperación física." },
-                    { t: "15:30", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
-                    { t: "16:00", type: "study", l: "TAREAS (1H)", d: "Avance académico." },
-                    { t: "18:00", type: "snack", l: "PRE-SALSA (2H)", d: "Sándwich de pavo + Jugo de naranja (Carbos para 120 min de baile)." },
-                    { t: "19:45", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
-                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Sesión intensa." },
-                    { t: "22:15", type: "meal", l: "CENA RECUPERADORA", d: "Leche chocolatada (RTD) + Puñado de semillas (Magnesio)." }
+                    { t: "07:15", type: "snack", l: "Snack 1: Pre-Entreno", d: "Fruta pequeña (Energía)." },
+                    { t: "07:30", type: "train", l: "GYM PIERNAS", d: "Rutina Melisa." },
+                    { t: "08:45", type: "snack", l: "Snack 2: Post-Entreno", d: "Yogurt griego + Granola." },
+                    { t: "09:10", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
+                    { t: "09:30", type: "meal", l: "DESAYUNO", d: "Huevos cocidos pack + Pan integral." },
+                    { t: "10:30", type: "work", l: "TRABAJO (2H)", d: "Concentración." },
+                    { t: "12:30", type: "snack", l: "Snack 3: Colación Tarde", d: "Puñado de nueces." },
+                    { t: "13:00", type: "meal", l: "ALMUERZO", d: "Pasta precocida + Pechuga de pavo." },
+                    { t: "14:00", type: "rest", l: "DESCANSO (1H)", d: "Pausa total." },
+                    { t: "15:30", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
+                    { t: "16:00", type: "study", l: "ESTUDIO (1H)", d: "Repaso." },
+                    { t: "17:00", type: "study", l: "TAREAS (1H)", d: "Avance." },
+                    { t: "18:00", type: "snack", l: "Snack 4: Pre-Salsa", d: "Sándwich ligero + Jugo (Glucógeno)." },
+                    { t: "19:45", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
+                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Intensidad técnica." },
+                    { t: "22:15", type: "meal", l: "CENA", d: "Atún en sobre + Semillas calabaza (Magnesio)." }
                 ],
-                store: ["Yogurt Griego", "Granola", "Pasta pack", "Atún sobre", "Leche chocolate"]
+                store: ["Huevos cocidos pack", "Pasta precocida", "Yogurt griego", "Pechuga de pavo pack"]
             },
             "Miércoles": {
-                info: "Fartlek + Salsa (2h) + Clases (9-1pm)",
+                desc: "Fartlek + Salsa (2h) + Clases (9-1pm)",
                 items: [
-                    { t: "07:00", type: "train", l: "FARTLEK RUNNING", d: "6x 3min trote x 45” velocidad (25 min)." },
-                    { t: "07:45", type: "snack", l: "POST-RUN (Tienda)", d: "Barrita de proteína + Electrolitos." },
-                    { t: "08:15", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
-                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "9 AM a 1 PM." },
-                    { t: "13:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
-                    { t: "13:30", type: "meal", l: "ALMUERZO", d: "Bowl de pollo/quinoa precocido (Tienda)." },
-                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Foco laboral." },
+                    { t: "06:45", type: "snack", l: "Snack 1: Pre-Running", d: "Medio plátano." },
+                    { t: "07:00", type: "train", l: "FARTLEK RUNNING", d: "25 min." },
+                    { t: "07:35", type: "snack", l: "Snack 2: Post-Running", d: "Batido Prot. o Leche con chocolate." },
+                    { t: "07:50", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
+                    { t: "08:15", type: "meal", l: "DESAYUNO", d: "Vaso de avena con chía/fruta." },
+                    { t: "09:00", type: "class", l: "UNIVERSIDAD", d: "9am - 1pm." },
+                    { t: "11:00", type: "snack", l: "Snack 3: Colación", d: "Queso tipo babybel o yogurt." },
+                    { t: "13:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
+                    { t: "13:30", type: "meal", l: "ALMUERZO", d: "Bowl de pollo + Vegetales (Tienda)." },
+                    { t: "14:30", type: "work", l: "TRABAJO (2H)", d: "Bloque único." },
                     { t: "16:30", type: "study", l: "ESTUDIO (1H)", d: "Repaso." },
-                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Desconexión." },
-                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Entregas." },
-                    { t: "19:30", type: "snack", l: "PRE-SALSA (Tienda)", d: "Manzana + Puñado de almendras." },
-                    { t: "19:50", type: "dog", l: "PASEO PERRO (3/3)", d: "10 min." },
-                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Continuidad técnica." },
-                    { t: "22:15", type: "meal", l: "CENA", d: "Ensalada de Atún + Galletas integrales." }
+                    { t: "17:30", type: "rest", l: "DESCANSO (1H)", d: "Pausa." },
+                    { t: "18:30", type: "study", l: "TAREAS (1H)", d: "Avance." },
+                    { t: "19:30", type: "snack", l: "Snack 4: Pre-Salsa", d: "Barrita de proteína." },
+                    { t: "19:50", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
+                    { t: "20:00", type: "train", l: "SALSA (2 HORAS)", d: "Cardio." },
+                    { t: "22:15", type: "meal", l: "CENA", d: "Ensalada de Atún (2 sobres)." }
                 ],
-                store: ["Electrolitos", "Bowl Pollo", "Almendras", "Galletas integrales"]
+                store: ["Bowl Pollo", "Leche chocolate", "Queso snack", "Barrita proteína"]
             }
         };
 
-        // Copiar Jueves/Viernes/Sábado para el ejemplo
-        schedule["Jueves"] = {...schedule["Martes"], info: "Salsa (2h)"};
+        // Generar otros días (plantilla similar)
+        schedule["Jueves"] = JSON.parse(JSON.stringify(schedule["Martes"]));
+        schedule["Jueves"].desc = "Salsa (2h)";
         schedule["Viernes"] = {
-            info: "Fútbol + Clases (1-5pm)",
+            desc: "Fútbol + Clases (1-5pm)",
             items: [
-                { t: "08:30", type: "work", l: "TRABAJO (2H)", d: "Bloque matutino." },
-                { t: "10:30", type: "snack", l: "COLACIÓN MATUTINA", d: "Fruta + Yogurt." },
-                { t: "11:30", type: "study", l: "ESTUDIO (1H)", d: "Foco académico." },
-                { t: "12:30", type: "meal", l: "ALMUERZO PRE-CLASE", d: "Sándwich de pollo (Tienda)." },
-                { t: "13:00", type: "class", l: "UNIVERSIDAD", d: "Clase hasta las 5:00 PM." },
-                { t: "17:10", type: "dog", l: "PASEO PERRO (2/3)", d: "10 min." },
-                { t: "17:30", type: "study", l: "TAREAS (1H)", d: "Último empujón." },
-                { t: "18:30", type: "rest", l: "DESCANSO (1H)", d: "Relajación." },
-                { t: "19:30", type: "snack", l: "PRE-FÚTBOL", d: "Barrita energética + Agua." },
-                { t: "20:00", type: "train", l: "FÚTBOL", d: "Partido/Entreno." },
-                { t: "22:00", type: "meal", l: "CENA", d: "Atún en sobre + Aguacate." }
+                { t: "08:15", type: "snack", l: "Snack 1", d: "Yogurt con granola." },
+                { t: "08:30", type: "work", l: "TRABAJO (2H)", d: "Mañana." },
+                { t: "10:30", type: "snack", l: "Snack 2", d: "Fruta + Nueces." },
+                { t: "11:00", type: "study", l: "ESTUDIO (1H)", d: "Enfoque." },
+                { t: "12:00", type: "meal", l: "DESAYUNO/ALMUERZO", d: "Sándwich doble pavo." },
+                { t: "13:00", type: "class", l: "UNIVERSIDAD", d: "1pm - 5pm." },
+                { t: "15:00", type: "snack", l: "Snack 3 (En Uni)", d: "Barrita de proteína." },
+                { t: "17:10", type: "dog", l: "Paseo Perro (2/3)", d: "10 min." },
+                { t: "17:30", type: "study", l: "TAREAS (1H)", d: "Cierre semana." },
+                { t: "18:30", type: "rest", l: "DESCANSO (1H)", d: "Relax." },
+                { t: "19:30", type: "snack", l: "Snack 4: Pre-Fútbol", d: "Fruta + Agua." },
+                { t: "20:00", type: "dog", l: "Paseo Perro (3/3)", d: "10 min." },
+                { t: "20:30", type: "train", l: "FÚTBOL", d: "Partido." },
+                { t: "22:30", type: "meal", l: "CENA", d: "Pechuga de pavo + Aguacate." }
             ],
-            store: ["Sándwich pollo", "Barrita", "Atún"]
-        };
-        schedule["Sábado"] = {
-            info: "Clase (8-10am) + Tareas",
-            items: [
-                { t: "07:30", type: "dog", l: "PASEO PERRO (1/3)", d: "10 min." },
-                { t: "08:00", type: "class", l: "UNIVERSIDAD", d: "Clase matutina." },
-                { t: "10:30", type: "meal", l: "BRUNCH", d: "Huevos cocidos pack + Fruta." },
-                { t: "12:00", type: "work", l: "TRABAJO (2H)", d: "Finalizar semana." },
-                { t: "14:00", type: "study", l: "TAREAS (1H)", d: "Limpieza académica." },
-                { t: "15:00", type: "rest", l: "DESCANSO (1H)", d: "Libre." }
-            ],
-            store: ["Huevo cocido pack", "Fruta"]
+            store: ["Sándwich preparado", "Yogurt", "Barrita"]
         };
 
         let currentDay = "Lunes";
@@ -179,21 +174,14 @@
             currentDay = day;
             const data = schedule[day];
             
-            // Nav
-            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
-            document.getElementById(`btn-${day}`).classList.add('day-btn-active');
+            // UI Update
+            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-active'));
+            document.getElementById(`btn-${day}`).classList.add('day-active');
 
             // Header
-            document.getElementById('day-header').innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900">${day}</h2>
-                        <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest mt-1">${data.info}</p>
-                    </div>
-                    <div class="bg-indigo-50 px-3 py-1 rounded-full text-[10px] font-bold text-indigo-700 border border-indigo-100 uppercase">
-                        Energía: ${day === 'Lunes' ? 'Máxima' : 'Media-Alta'}
-                    </div>
-                </div>
+            document.getElementById('day-info').innerHTML = `
+                <h2 class="text-3xl font-black text-slate-800 tracking-tighter">${day}</h2>
+                <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest mt-1">${data.desc}</p>
             `;
 
             // Timeline
@@ -201,37 +189,37 @@
             tl.innerHTML = '';
             data.items.forEach(i => {
                 const card = document.createElement('div');
-                card.className = "card-timeline bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4 items-center";
+                let typeClass = i.type === 'meal' ? 'meal-main' : (i.type === 'snack' ? 'meal-snack' : (i.type === 'dog' ? 'dog-block' : 'activity-block'));
+                
+                card.className = `p-3 rounded-lg shadow-sm border ${typeClass} flex items-center gap-4 transition-transform hover:scale-[1.01]`;
                 card.innerHTML = `
-                    <div class="w-12 text-[10px] font-black text-slate-400 border-r pr-2">${i.t}</div>
+                    <div class="w-10 text-[10px] font-black text-slate-400 border-r pr-2">${i.t}</div>
                     <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full uppercase tag-${i.type}">${i.type}</span>
-                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-tight">${i.l}</h4>
-                        </div>
-                        <p class="text-[11px] text-slate-500 leading-tight">${i.d}</p>
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-tight">${i.l}</h4>
+                        <p class="text-[10px] text-slate-500 leading-none mt-1">${i.d}</p>
                     </div>
+                    ${i.type === 'meal' || i.type === 'snack' ? '<i class="fas fa-apple-alt text-[10px] text-pink-400"></i>' : ''}
                 `;
                 tl.appendChild(card);
             });
 
-            // Shopping
+            // Store
             const shop = document.getElementById('shopping-list');
             shop.innerHTML = '';
             data.store.forEach(s => {
                 const item = document.createElement('div');
-                item.className = "flex items-center gap-2 text-xs text-slate-600 p-2 bg-slate-50 rounded-lg border border-slate-100";
-                item.innerHTML = `<i class="fas fa-check text-pink-400"></i> ${s}`;
+                item.className = "text-[11px] text-slate-600 p-2 bg-slate-50 rounded border border-slate-100 flex items-center gap-2";
+                item.innerHTML = `<i class="fas fa-check-circle text-indigo-500"></i> ${s}`;
                 shop.appendChild(item);
             });
         }
 
         function renderNav() {
-            const container = document.getElementById('nav-days');
+            const container = document.getElementById('day-buttons');
             Object.keys(schedule).forEach(day => {
                 const b = document.createElement('button');
                 b.id = `btn-${day}`;
-                b.className = "day-btn w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all hover:bg-slate-100";
+                b.className = "day-btn w-full text-left px-4 py-3 rounded-xl text-xs font-bold transition-all hover:bg-slate-100 bg-white border border-slate-200";
                 b.innerText = day;
                 b.onclick = () => selectDay(day);
                 container.appendChild(b);
@@ -241,15 +229,14 @@
         function downloadExcel() {
             const wb = XLSX.utils.book_new();
             Object.keys(schedule).forEach(day => {
-                const data = schedule[day];
                 const content = [
-                    ["HORARIO", "CATEGORÍA", "ACTIVIDAD / COMIDA", "NOTAS DE RENDIMIENTO"],
-                    ...data.items.map(i => [i.t, i.type.toUpperCase(), i.l, i.d])
+                    ["HORA", "TIPO", "ACTIVIDAD / COMIDA", "DESCRIPCIÓN"],
+                    ...schedule[day].items.map(i => [i.t, i.type.toUpperCase(), i.l, i.d])
                 ];
                 const ws = XLSX.utils.aoa_to_sheet(content);
                 XLSX.utils.book_append_sheet(wb, ws, day);
             });
-            XLSX.writeFile(wb, "Plan_Melisa_Rendimiento_V2.xlsx");
+            XLSX.writeFile(wb, "Plan_Nutricional_7_Comidas_Melisa.xlsx");
         }
 
         window.onload = () => { renderNav(); selectDay("Lunes"); };
