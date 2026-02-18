@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan de Vida Melisa - Alta Eficiencia</title>
+    <title>Plan de Vida Christian - Alta Eficiencia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +27,7 @@
         <div class="flex items-center gap-3">
             <i class="fas fa-dog text-2xl text-orange-400"></i>
             <div>
-                <h1 class="font-bold text-lg leading-none">Sistema Melisa 24/7</h1>
+                <h1 class="font-bold text-lg leading-none">Sistema Christian 24/7</h1>
                 <p class="text-[10px] text-indigo-300 mt-1 uppercase tracking-widest">Trabajo · Estudio · Deporte · Mascota</p>
             </div>
         </div>
@@ -86,7 +86,7 @@
             "Lunes": {
                 goal: "Gym + Fútbol + Clases (9-1pm)",
                 items: [
-                    { t: "06:30", type: "train", l: "Gym Tren Superior", d: "Rutina Melisa: Fuerza + Aeróbico." },
+                    { t: "06:30", type: "train", l: "Gym Tren Superior", d: "Rutina Christian: Fuerza + Aeróbico." },
                     { t: "07:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min. Activación matutina." },
                     { t: "08:00", type: "meal", l: "Desayuno Tienda", d: "Avena vaso + Yogurt griego (Fácil digestión)." },
                     { t: "09:00", type: "class", l: "UNIVERSIDAD (Bloque 1)", d: "Clases hasta la 1:00 PM." },
@@ -106,7 +106,7 @@
             "Martes": {
                 goal: "Pierna + Salsa (2h)",
                 items: [
-                    { t: "07:30", type: "train", l: "Gym Piernas", d: "Rutina Melisa: Skiping, Yoguis + Fuerza." },
+                    { t: "07:30", type: "train", l: "Gym Piernas", d: "Rutina Christian: Skiping, Yoguis + Fuerza." },
                     { t: "08:30", type: "dog", l: "Paseo Perro (1/3)", d: "10 min." },
                     { t: "09:00", type: "study", l: "ESTUDIO (1H)", d: "Repaso matutino." },
                     { t: "10:00", type: "work", l: "TRABAJO (2H)", d: "Bloque laboral." },
@@ -257,7 +257,7 @@
                 const ws = XLSX.utils.aoa_to_sheet(content);
                 XLSX.utils.book_append_sheet(wb, ws, day);
             });
-            XLSX.writeFile(wb, "Plan_Integral_Melisa_Optimizado.xlsx");
+            XLSX.writeFile(wb, "Plan_Integral_Christian_Optimizado.xlsx");
         }
 
         window.onload = () => { renderNav(); selectDay("Lunes"); };
