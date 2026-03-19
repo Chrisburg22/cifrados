@@ -121,8 +121,9 @@
                 }, delay);
             }
 
-            function togglePlay() {
+            window.toggleAudio = function() {
                 if (audio.paused) {
+                    if (audio.currentTime === 0) audio.currentTime = 30;
                     audio.play();
                     if (playBtn) playBtn.textContent = '⏸';
                 } else {
@@ -131,7 +132,7 @@
                 }
             }
 
-            if (playBtn) playBtn.addEventListener('click', togglePlay);
+            if (playBtn) playBtn.addEventListener('click', window.toggleAudio);
             if (volSlide) volSlide.addEventListener('input', () => { audio.volume = parseFloat(volSlide.value); });
 
             audio.addEventListener('timeupdate', () => {
@@ -152,12 +153,16 @@
 
             let started = false;
             function startMusic() {
-                if (started) return; started = true;
+                if (started) return;
+                started = true;
+                audio.currentTime = 30; // Start at 30 seconds
                 audio.play().then(() => {
                     fadeIn(parseFloat(volSlide ? volSlide.value : '0.7'), 1400);
                     if (playBtn) playBtn.textContent = '⏸';
                     if (toast) toast.classList.add('show');
-                }).catch(() => { if (toast) toast.classList.add('show'); });
+                }).catch(() => {
+                    if (toast) toast.classList.add('show');
+                });
             }
 
             ['click', 'keydown', 'touchstart'].forEach(ev =>
@@ -324,52 +329,6 @@
             for (let i = 2; i <= 14; i++) injectWillie(i);
         }, 200);
 
-        // ════════════════════════════════════════════════════════════════
         //  🎺  OH QUÉ SERÁ — Willie Colón
-        //  Audio real embebido como base64. Suena al primer gesto del
-        //  usuario (click / keydown / touch) — requerimiento del browser.
-        //  Fade in suave de 1s, fade out a los 30s, volumen al 70%.
-        // ════════════════════════════════════════════════════════════════
-        let salsaPlayed = false;
+        //  Audio logic unified in the top controller.
 
-        function buildSalsa() {
-            if (salsaPlayed) return;
-            salsaPlayed = true;
-
-            const audio = document.getElementById('salsa-audio');
-            if (!audio) return;
-
-            audio.volume = 0;
-            audio.currentTime = 0;
-
-            audio.play().then(() => {
-                // Fade in over 1.2 seconds
-                let vol = 0;
-                const fadeIn = setInterval(() => {
-                    vol = Math.min(vol + 0.04, 0.72);
-                    audio.volume = vol;
-                    if (vol >= 0.72) clearInterval(fadeIn);
-                }, 50);
-
-                // Toast
-                const toast = document.getElementById('music-toast');
-                if (toast) {
-                    toast.innerHTML = '🎺 Willie Colón — Oh Qué Será';
-                    toast.classList.add('show');
-                    setTimeout(() => toast.classList.remove('show'), 7000);
-                }
-
-            }).catch(() => {
-                // Autoplay blocked — silently ignore, user can click again
-                salsaPlayed = false;
-            });
-        }
-
-        // Arm on first user gesture (browser policy)
-        let salsaArmed = false;
-        function armSalsa() {
-            if (!salsaArmed) { salsaArmed = true; buildSalsa(); }
-        }
-        ['click', 'keydown', 'touchstart'].forEach(ev =>
-            document.addEventListener(ev, armSalsa, { once: true, passive: true })
-        );
