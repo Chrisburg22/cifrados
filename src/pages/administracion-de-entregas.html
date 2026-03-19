@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Willie Colón × CI/CD — Entregas y Liberaciones de Software</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/slides/administracion.css">
+</head>
+
+<body>
+
+    <!-- TOP NAV BAR -->
+    <div class="nav nav-top">
+        <button onclick="prevSlide()">← Prev</button>
+        <div class="progress-dots" id="dots-top"></div>
+        <span class="slide-counter" id="counter-top">1 / 14</span>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- ── FIXED CHROME ── -->
+    <div class="clave-top"></div>
+    <div class="clave-bottom"></div>
+    <img class="vinyl-watermark"
+        src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYmciIGN4PSI1MCUiIGN5PSI0MCUiIHI9IjcwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMxYTBhMDAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDAwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJ2ZyIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMWExYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iIzBhMGEwYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTA1MDUiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImxnIiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZTYzMDAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzhhMTUwMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ2ciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZlMDY2Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjZmZkNzAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2M4ODYwYSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9Imdsb3ciPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjMiIHJlc3VsdD0iYiIvPgogICAgICA8ZmVNZXJnZT48ZmVNZXJnZU5vZGUgaW49ImIiLz48ZmVNZXJnZU5vZGUgaW49IlNvdXJjZUdyYXBoaWMiLz48L2ZlTWVyZ2U+CiAgICA8L2ZpbHRlcj4KICAgIDxwYXR0ZXJuIGlkPSJkb3RzIiB4PSIwIiB5PSIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iMSIgZmlsbD0icmdiYSgyNTUsODAsMCwwLjEyKSIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNiZykiLz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNkb3RzKSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iMTc1IiBmaWxsPSJ1cmwoI3ZnKSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iMTYwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wNCkiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTkwIiByPSIxNDgiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxOTAiIHI9IjEzNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDQpIiBzdHJva2Utd2lkdGg9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iMTI0IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTkwIiByPSIxMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA0KSIgc3Ryb2tlLXdpZHRoPSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxOTAiIHI9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxOTAiIHI9IjU1IiBmaWxsPSJ1cmwoI2xnKSIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iNTMiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjAwLDAsMC40KSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHBhdGggaWQ9ImFyYyIgZD0iTSAxNTgsMTc4IEEgNDIsNDIgMCAwLDEgMjQyLDE3OCIgZmlsbD0ibm9uZSIvPgogIDx0ZXh0IGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXNpemU9IjciIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmQ3MDAiIGxldHRlci1zcGFjaW5nPSIyIj4KICAgIDx0ZXh0UGF0aCBocmVmPSIjYXJjIiBzdGFydE9mZnNldD0iNiUiPkZBTklBICBSRUNPUkRTPC90ZXh0UGF0aD4KICA8L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIxOTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiIGxldHRlci1zcGFjaW5nPSIxIj5XSUxMSUU8L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIyMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmQ3MDAiIGxldHRlci1zcGFjaW5nPSIxIj5DT0zDk048L3RleHQ+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTkwIiByPSI0IiBmaWxsPSIjMDAwIi8+CiAgPGcgZmlsdGVyPSJ1cmwoI2dsb3cpIj4KICAgIDxlbGxpcHNlIGN4PSIzMTUiIGN5PSI5MiIgcng9IjMzIiByeT0iMTYiIGZpbGw9InVybCgjZ2cpIiBvcGFjaXR5PSIwLjk1IiB0cmFuc2Zvcm09InJvdGF0ZSgtMzUsMzE1LDkyKSIvPgogICAgPGVsbGlwc2UgY3g9IjMxNSIgY3k9IjkyIiByeD0iMjgiIHJ5PSIxMiIgZmlsbD0iIzBkMDUwMCIgdHJhbnNmb3JtPSJyb3RhdGUoLTM1LDMxNSw5MikiLz4KICAgIDxsaW5lIHgxPSIyODUiIHkxPSIxMTUiIHgyPSIxMzAiIHkyPSIyNzAiIHN0cm9rZT0idXJsKCNnZykiIHN0cm9rZS13aWR0aD0iMTMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGxpbmUgeDE9IjI4NSIgeTE9IjExNSIgeDI9IjEzMCIgeTI9IjI3MCIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMTUpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGxpbmUgeDE9IjI3MiIgeTE9IjEyNyIgeDI9IjEyMCIgeTI9IjI4MiIgc3Ryb2tlPSIjYzg4NjBhIiBzdHJva2Utd2lkdGg9IjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPHBhdGggZD0iTSAxMTcgMjg2IFEgOTggMzA1IDExNSAzMjAgUSAxMjggMzMyIDE0MCAzMjUgUSAxNDggMzIwIDE0MyAzMTAgUSAxMzMgMjk4IDEzMCAyODMiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNnZykiIHN0cm9rZS13aWR0aD0iMTIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGVsbGlwc2UgY3g9IjI5MiIgY3k9IjEwNyIgcng9IjciIHJ5PSI0IiBmaWxsPSIjZmZkNzAwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMzUsMjkyLDEwNykiLz4KICAgIDxsaW5lIHgxPSIyOTIiIHkxPSIxMDciIHgyPSIzMjAiIHkyPSI4MiIgc3Ryb2tlPSIjZmZkNzAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGxpbmUgeDE9IjMyNCIgeTE9Ijc5IiB4Mj0iMzMyIiB5Mj0iNzEiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDxwYXRoIGQ9Ik0gMjQwIDE2MCBRIDIzMCAxNDUgMjIwIDE1NSBRIDIxMCAxNjUgMjIwIDE3NyBRIDIzMCAxODggMjQ1IDE3NyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2dnKSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L2c+CiAgPGcgZmlsbD0icmdiYSgyNTUsMTgwLDAsMC41NSkiPgogICAgPHRleHQgeD0iNDUiIHk9IjcwIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2VyaWYiIHRyYW5zZm9ybT0icm90YXRlKC0xNSw0NSw3MCkiPuKZqjwvdGV4dD4KICAgIDx0ZXh0IHg9IjM0MCIgeT0iMjkwIiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ic2VyaWYiIHRyYW5zZm9ybT0icm90YXRlKDEwLDM0MCwyOTApIj7imas8L3RleHQ+CiAgICA8dGV4dCB4PSI2MCIgeT0iMzIwIiBmb250LXNpemU9IjE0IiBmb250LWZhbWlseT0ic2VyaWYiIHRyYW5zZm9ybT0icm90YXRlKC04LDYwLDMyMCkiPuKZqTwvdGV4dD4KICAgIDx0ZXh0IHg9IjM1MCIgeT0iNjUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJzZXJpZiIgdHJhbnNmb3JtPSJyb3RhdGUoMjAsMzUwLDY1KSI+4pmqPC90ZXh0PgogICAgPHRleHQgeD0iMjgiIHk9IjIxMCIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9InNlcmlmIj7imas8L3RleHQ+CiAgICA8dGV4dCB4PSIzNDIiIHk9IjE1MCIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9InNlcmlmIj7imak8L3RleHQ+CiAgPC9nPgogIDxyZWN0IHg9IjAiIHk9IjMzMCIgd2lkdGg9IjQwMCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgwLDAsMCwwLjg4KSIvPgogIDxyZWN0IHg9IjAiIHk9IjMzMCIgd2lkdGg9IjQwMCIgaGVpZ2h0PSIyIiBmaWxsPSJ1cmwoI2dnKSIvPgogIDxyZWN0IHg9IjAiIHk9IjMzMCIgd2lkdGg9IjQiIGhlaWdodD0iNzAiIGZpbGw9IiNlNjMwMDAiLz4KICA8cmVjdCB4PSIzOTYiIHk9IjMzMCIgd2lkdGg9IjQiIGhlaWdodD0iNzAiIGZpbGw9IiNlNjMwMDAiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjM1NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLEltcGFjdCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSJ1cmwoI2dnKSIgbGV0dGVyLXNwYWNpbmc9IjQiIGZpbHRlcj0idXJsKCNnbG93KSI+V0lMTElFIENPTMOTTjwvdGV4dD4KICA8dGV4dCB4PSIyMDAiIHk9IjM3MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOCIgZmlsbD0icmdiYSgyNTUsMTQwLDAsMC45KSIgbGV0dGVyLXNwYWNpbmc9IjUiPkVMIE1BTE8gwrcgU0FMU0EgwrcgRkFOSUE8L3RleHQ+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMzgwIiB4Mj0iMzQwIiB5Mj0iMzgwIiBzdHJva2U9InJnYmEoMjU1LDIxNSwwLDAuMjUpIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjM5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNyIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQ1KSIgbGV0dGVyLXNwYWNpbmc9IjMiPkJST05YIMK3IE5FVyBZT1JLIMK3IFBBTkFNw4E8L3RleHQ+CiAgPGcgZmlsbD0icmdiYSgyNTUsMTIwLDAsMC41KSI+CiAgICA8Y2lyY2xlIGN4PSI4MCIgY3k9IjM4NiIgcj0iMiIvPjxjaXJjbGUgY3g9IjkwIiBjeT0iMzg2IiByPSIyIi8+PGNpcmNsZSBjeD0iMTAzIiBjeT0iMzg2IiByPSIyIi8+CiAgICA8Y2lyY2xlIGN4PSIxMTMiIGN5PSIzODYiIHI9IjIiLz48Y2lyY2xlIGN4PSIxMjYiIGN5PSIzODYiIHI9IjIiLz4KICAgIDxjaXJjbGUgY3g9IjI3NCIgY3k9IjM4NiIgcj0iMiIvPjxjaXJjbGUgY3g9IjI4NyIgY3k9IjM4NiIgcj0iMiIvPjxjaXJjbGUgY3g9IjI5NyIgY3k9IjM4NiIgcj0iMiIvPgogICAgPGNpcmNsZSBjeD0iMzEwIiBjeT0iMzg2IiByPSIyIi8+PGNpcmNsZSBjeD0iMzIwIiBjeT0iMzg2IiByPSIyIi8+CiAgPC9nPgogIDxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIzOTIiIGhlaWdodD0iMzkyIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDE0MCwwLDAuMTgpIiBzdHJva2Utd2lkdGg9IjEiIHJ4PSIzIi8+Cjwvc3ZnPg=="
+        alt="" />
+
+    <!-- ── FLOATING MUSICAL NOTES ── -->
+    <div class="floating-notes" id="fnotes"></div>
+
+    <!-- ── MUSIC TOAST ── -->
+    <div id="music-toast">♪ Sonando: Willie Colón — ¿Qué Será?</div>
+
+    <!-- ── AUDIO ── -->
+    <audio id="salsa-audio" src="../../public/mp3/willie_colon_-_oh_qué_será_letra_oficial@nicooponcee.mp3"
+        preload="auto" loop style="display:none">
+    </audio>
+
+    <div class="slides-container">
+
+        <!-- ════════════════════════════════════════
+     S1 — PORTADA
+════════════════════════════════════════ -->
+        <div class="slide active" id="s1">
+            <div class="slide-bg">
+                <div class="bg-vinyl-right" style="width:600px;height:600px;right:-100px"></div>
+                <div class="bg-trombone-stripe"></div>
+                <div class="bg-slide-num">01</div>
+            </div>
+            <!-- Portada — large vinyl + audio player -->
+            <div class="willie-panel" style="pointer-events:all; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px">
+
+                <!-- LARGE VINYL DISC -->
+                <img class="vinyl-cover-large"
+                     id="cover-vinyl"
+                     src=""
+                     alt="Vinyl Willie Colón"
+                     onclick="toggleAudio()" />
+
+                <!-- AUDIO PLAYER -->
+                <div class="audio-player-wrap">
+                    <div class="audio-label">♪ Willie Colón — ¿Qué Será? · Fania Records</div>
+                    <div class="audio-controls">
+                        <button class="audio-btn" id="play-btn" onclick="toggleAudio()">▶</button>
+                        <div class="audio-progress-wrap" id="prog-wrap">
+                            <div class="audio-progress-fill" id="prog-fill"></div>
+                        </div>
+                        <span class="audio-time" id="audio-time">0:00</span>
+                    </div>
+                    <div class="audio-vol-wrap">
+                        <span>🔊</span>
+                        <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.7">
+                    </div>
+                </div>
+
+                <!-- Hidden audio element using the local MP3 -->
+                <audio id="salsa-audio"
+                       src="/mp3/willie_colon_-_oh_qu%C3%A9_ser%C3%A1_letra_oficial%40nicooponcee.mp3"
+                       preload="auto" loop style="display:none"></audio>
+            </div>
+
+            <div style="max-width:50%;flex:1;display:flex;flex-direction:column;justify-content:center">
+                <div class="salsa-badge">♪ Inspirado en Willie Colón — El Malo · Fania Records</div>
+                <div
+                    style="font-family:'Space Mono',monospace;font-size:10px;color:var(--so);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:16px">
+                    // Investigación Técnica — 2026</div>
+                <h1 style="margin-bottom:20px">Administración de<br><span class="gold">Entregas</span>
+                    y<br>Liberaciones<br>de Software</h1>
+                <div class="quote-band">
+                    <p>"La música no miente. Si hay algo que cambiar en este mundo, solo puede venir de la música."</p>
+                    <cite>— Willie Colón, El Malo del Bronx</cite>
+                </div>
+                <div style="display:flex;gap:22px;flex-wrap:wrap">
+                    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted)">Slides:
+                        <span class="gold">14</span></span>
+                    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted)">Cobertura:
+                        <span class="gold">CI/CD · DevOps · ITIL · SRE</span></span>
+                </div>
+            </div>
+            <div class="bg-fania-tag">FANIA RECORDS · EL MALO · 1967 · ¿QUÉ SERÁ?</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S2 — QUÉ ES
+════════════════════════════════════════ -->
+        <div class="slide" id="s2">
+            <div class="slide-bg">
+                <div class="bg-slide-num">02</div>
+                <svg class="groove-circles" style="right:-40px;top:50%;transform:translateY(-50%)" width="300"
+                    height="300" viewBox="0 0 300 300">
+                    <circle cx="150" cy="150" r="140" />
+                    <circle cx="150" cy="150" r="120" />
+                    <circle cx="150" cy="150" r="100" />
+                    <circle cx="150" cy="150" r="80" />
+                    <circle cx="150" cy="150" r="60" />
+                    <circle cx="150" cy="150" r="40" />
+                </svg>
+            </div>
+            <div class="slide-label">02 — Definición</div>
+            <h2 style="margin-bottom:12px">¿Qué es la <span class="gold">Gestión de Releases</span>?</h2>
+            <div class="quote-band" style="margin-bottom:12px">
+                <p>"El trombón tiene que entrar en el momento exacto — ni antes, ni después. Así son los releases."</p>
+                <cite>— Parafraseando a Willie Colón sobre el timing</cite>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+                <div class="grid-2">
+                    <p style="color:var(--text-muted);font-size:0.82rem;line-height:1.7">Disciplina que planifica,
+                        coordina, controla y automatiza el flujo de software desde el desarrollo hasta producción. Como
+                        la orquesta de salsa de Colón: cada instrumento (job) tiene su momento exacto.</p>
+                    <div>
+                        <p
+                            style="font-family:'Space Mono',monospace;font-size:9px;color:var(--sg);margin-bottom:8px;letter-spacing:0.1em">
+                            TERMINOLOGÍA — COMO INSTRUMENTOS SALSEROS</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:5px">
+                            <span class="tag">Release 🎺</span><span class="tag">Deployment 🥁</span>
+                            <span class="tag green">Pipeline 🎸</span><span class="tag green">Artifact 📀</span>
+                            <span class="tag purple">Rollback ⏪</span><span class="tag red">Hotfix 🚨</span>
+                            <span class="tag">Feature Flag 🚩</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-4">
+                    <div class="card">
+                        <h3>🥁 Build Mgmt.</h3>
+                        <p>Compilación y empaquetado — el <em>ritmo base</em> del proceso.</p>
+                    </div>
+                    <div class="card green">
+                        <h3>🎺 Release Mgmt.</h3>
+                        <p>Control de versiones — el <em>arreglo musical</em> que coordina todo.</p>
+                    </div>
+                    <div class="card purple">
+                        <h3>🎸 Deployment</h3>
+                        <p>Instalación en ambientes — el <em>concierto en vivo</em>, sin errores.</p>
+                    </div>
+                    <div class="card gold-card">
+                        <h3>🎵 Change Mgmt.</h3>
+                        <p>Control de cambios — la <em>afinación</em> antes de salir al escenario.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ Willie Colón empezó grabando con 17 años — los grandes empiezan temprano</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S3 — EVOLUCIÓN
+════════════════════════════════════════ -->
+        <div class="slide" id="s3">
+            <div class="slide-bg">
+                <div class="bg-slide-num">03</div>
+                <div
+                    style="position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--sr),var(--sg),var(--so))">
+                </div>
+            </div>
+            <div class="slide-label">03 — Historia</div>
+            <h2 style="margin-bottom:16px">Evolución <span class="gold">Histórica</span></h2>
+            <div class="quote-band" style="margin-bottom:14px">
+                <p>"El sonido del Bronx evolucionó del mambo al boogaloo a la salsa. El software evolucionó del
+                    Waterfall al DevOps."</p>
+                <cite>— La cronología de Colón ↔ la cronología del CI/CD</cite>
+            </div>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-era">1970–2000<br>WATERFALL<br><span style="color:var(--so);font-size:8px">≈ Era
+                            Fania</span></div>
+                    <div class="tl-line">
+                        <div class="tl-dot" style="background:var(--so)"></div>
+                        <div class="tl-vert"></div>
+                    </div>
+                    <div class="tl-content">
+                        <h3 class="orange">Era del modelo en cascada</h3>
+                        <p>Ciclos de 6–18 meses · Procesos 100% manuales · Comités CAB · ITIL v2/v3 · Como los vinilos
+                            de Fania: largos meses de grabación antes de salir al mercado.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-era">2001–2010<br>ÁGIL<br><span style="color:#a78bfa;font-size:8px">≈ Era
+                            Fusion</span></div>
+                    <div class="tl-line">
+                        <div class="tl-dot" style="background:#a78bfa"></div>
+                        <div class="tl-vert"></div>
+                    </div>
+                    <div class="tl-content">
+                        <h3 style="color:#a78bfa">Era del Manifiesto Ágil</h3>
+                        <p>Sprints de 2–4 semanas · CI por Martin Fowler (2006) · Como la fusión salsa-jazz de Colón:
+                            más velocidad, más improvisación, mismo rigor.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-era">2010–HOY<br>DEVOPS<br><span style="color:var(--accent3);font-size:8px">≈ Era
+                            Streaming</span></div>
+                    <div class="tl-line">
+                        <div class="tl-dot" style="background:var(--accent3)"></div>
+                    </div>
+                    <div class="tl-content">
+                        <h3 class="green" style="color:var(--accent3)">Era DevOps y Cloud Native</h3>
+                        <p>Deploy múltiple diario · IaC · Contenedores · GitOps · IDPs — Como el streaming: música
+                            (software) disponible al instante, en cualquier momento.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ 1967: "El Malo" — primer álbum de Willie Colón. El debut que lo cambió todo.
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S4 — DORA METRICS
+════════════════════════════════════════ -->
+        <div class="slide" id="s4">
+            <div class="slide-bg">
+                <div class="bg-slide-num">04</div>
+                <div
+                    style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(255,215,0,0.03) 0%,transparent 60%)">
+                </div>
+            </div>
+            <div class="slide-label">04 — Métricas</div>
+            <h2 style="margin-bottom:14px">Métricas <span class="gold">DORA</span></h2>
+            <div class="quote-band" style="margin-bottom:12px">
+                <p>"En la salsa, el tiempo lo es todo. Un trombonista que entra tarde arruina el tema — un deploy que
+                    tarda semanas arruina el negocio."</p>
+                <cite>— Willie Colón sobre el tempo · Paralelismo con DORA Lead Time</cite>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+                    <div class="stat-box">
+                        <div class="stat-num">208×</div>
+                        <div class="stat-label">más frecuencia de deploy — organizaciones élite vs. bajo rendimiento
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-num">2604×</div>
+                        <div class="stat-label">más rápido tiempo de recuperación ante fallos (MTTR)</div>
+                    </div>
+                </div>
+                <div style="border-radius:10px;border:1px solid var(--border);overflow:hidden">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>MÉTRICA 🎵</th>
+                                <th>🏆 ELITE</th>
+                                <th>ALTO</th>
+                                <th>MEDIO</th>
+                                <th>BAJO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Deployment Frequency</td>
+                                <td style="color:var(--accent3)">Múltiples/día</td>
+                                <td>Semanal</td>
+                                <td>Mensual</td>
+                                <td>1–6 meses</td>
+                            </tr>
+                            <tr>
+                                <td>Lead Time for Changes</td>
+                                <td style="color:var(--accent3)">&lt; 1 hora</td>
+                                <td>1 día–1 sem.</td>
+                                <td>1 sem.–1 mes</td>
+                                <td>1–6 meses</td>
+                            </tr>
+                            <tr>
+                                <td>Change Failure Rate</td>
+                                <td style="color:var(--accent3)">0–15%</td>
+                                <td>16–30%</td>
+                                <td>16–30%</td>
+                                <td>16–30%</td>
+                            </tr>
+                            <tr>
+                                <td>Time to Restore</td>
+                                <td style="color:var(--accent3)">&lt; 1 hora</td>
+                                <td>&lt; 1 día</td>
+                                <td>1 día–1 sem.</td>
+                                <td>&gt; 1 semana</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ Willie Colón lanzó más de 40 álbumes — alto volumen, alta calidad</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S5 — CI/CD PIPELINE
+════════════════════════════════════════ -->
+        <div class="slide" id="s5">
+            <div class="slide-bg">
+                <div class="bg-slide-num">05</div>
+                <div
+                    style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(230,48,0,0.03) 0%,transparent 50%)">
+                </div>
+            </div>
+            <div class="slide-label">05 — Automatización</div>
+            <h2 style="margin-bottom:14px">Pipeline <span class="gold">CI/CD</span></h2>
+            <div class="quote-band" style="margin-bottom:12px">
+                <p>"Una buena orquesta no improvisa cada noche desde cero — tiene un arreglo, un pipeline, que todos
+                    siguen. El resultado es siempre excelente."</p>
+                <cite>— Como el pipeline CI/CD: un proceso repetible que garantiza calidad</cite>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center">
+                <div>
+                    <p
+                        style="font-family:'Space Mono',monospace;font-size:9px;color:var(--so);margin-bottom:7px;letter-spacing:0.1em">
+                        🎵 INTEGRACIÓN CONTINUA (CI) — El arreglo musical</p>
+                    <div class="pipeline">
+                        <div class="pipe-step hl">Source 🎼</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Build 🏗️</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Unit Tests 🧪</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Static Analysis 🔍</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Security 🔒</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Package 📦</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step hl">Publish 🎶</div>
+                    </div>
+                </div>
+                <div>
+                    <p
+                        style="font-family:'Space Mono',monospace;font-size:9px;color:var(--so);margin-bottom:7px;letter-spacing:0.1em">
+                        🎺 ENTREGA CONTINUA (CD) — El concierto en vivo</p>
+                    <div class="pipeline">
+                        <div class="pipe-step">Deploy Dev</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Deploy Staging</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Smoke Tests</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">E2E Tests</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step">Perf. Tests</div>
+                        <div class="pipe-arrow">›</div>
+                        <div class="pipe-step hl">Production 🎉</div>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>🎸 Herramientas CI</h3>
+                        <ul>
+                            <li>Jenkins</li>
+                            <li>GitHub Actions</li>
+                            <li>GitLab CI/CD</li>
+                            <li>CircleCI</li>
+                        </ul>
+                    </div>
+                    <div class="card green">
+                        <h3>🥁 Herramientas CD</h3>
+                        <ul>
+                            <li>ArgoCD</li>
+                            <li>Spinnaker</li>
+                            <li>Harness</li>
+                            <li>Octopus Deploy</li>
+                        </ul>
+                    </div>
+                    <div class="card gold-card">
+                        <h3>📀 Repositorios</h3>
+                        <ul>
+                            <li>JFrog Artifactory</li>
+                            <li>Sonatype Nexus</li>
+                            <li>AWS ECR</li>
+                            <li>GitHub Packages</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "Cosa Nuestra" (1969) — Willie Colón: el álbum que lo llevó al siguiente nivel
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S6 — ESTRATEGIAS DE DESPLIEGUE
+════════════════════════════════════════ -->
+        <div class="slide" id="s6">
+            <div class="slide-bg">
+                <div class="bg-slide-num">06</div>
+                <svg class="groove-circles" style="left:-80px;top:50%;transform:translateY(-50%)" width="300"
+                    height="300" viewBox="0 0 300 300">
+                    <circle cx="150" cy="150" r="140" />
+                    <circle cx="150" cy="150" r="110" />
+                    <circle cx="150" cy="150" r="80" />
+                    <circle cx="150" cy="150" r="50" />
+                </svg>
+            </div>
+            <div class="slide-label">06 — Despliegue</div>
+            <h2 style="margin-bottom:12px">Estrategias de <span class="gold">Despliegue</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"Willie nunca lanzaba un álbum sin probarlo primero con el público en conciertos pequeños. Eso es el
+                    Canary Release."</p>
+                <cite>— Estrategia de validación gradual, como lo hacía Colón en el Barrio</cite>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;flex:1">
+                <div class="strat-card">
+                    <div class="strat-title">🔵🟢 Blue / Green — <span class="gold" style="font-size:0.75rem">Lado A /
+                            Lado B del vinilo</span></div>
+                    <p>Dos ambientes idénticos. El tráfico se redirige instantáneamente. Como pasar del Lado A al Lado B
+                        del LP: el público no nota el cambio.</p>
+                    <div class="pros-cons"><span class="pro">✓ Zero-downtime · Rollback instantáneo</span><span
+                            class="con">✗ Doble infraestructura</span></div>
+                </div>
+                <div class="strat-card">
+                    <div class="strat-title">🐦 Canary — <span class="gold" style="font-size:0.75rem">Prueba en el
+                            barrio primero</span></div>
+                    <p>Deploy gradual: 5%→50%→100%. Como Willie tocando en el Hunts Point Palace antes del Madison
+                        Square Garden.</p>
+                    <div class="pros-cons"><span class="pro">✓ Riesgo mínimo · Feedback real</span><span class="con">✗
+                            Ambas versiones coexisten</span></div>
+                </div>
+                <div class="strat-card">
+                    <div class="strat-title">🔄 Rolling Update — <span class="gold" style="font-size:0.75rem">Cambio de
+                            músicos en gira</span></div>
+                    <p>Reemplazo gradual de instancias sin detener el show. Como rotar músicos durante una gira larga:
+                        el ritmo no se detiene.</p>
+                    <div class="pros-cons"><span class="pro">✓ Sin downtime · Eficiente</span><span class="con">✗
+                            Rollback más complejo</span></div>
+                </div>
+                <div class="strat-card">
+                    <div class="strat-title">🚩 Feature Flags — <span class="gold" style="font-size:0.75rem">Ensayo vs.
+                            Concierto</span></div>
+                    <p>Desacopla deploy de release. El trombón está en el estudio (deploy) pero el público lo escucha
+                        cuando Willie decide (release).<br><span class="tag"
+                            style="margin-top:7px;display:inline-block">LaunchDarkly</span> <span
+                            class="tag">Unleash</span></p>
+                    <div class="pros-cons"><span class="pro">✓ Control total · A/B testing</span><span class="con">✗
+                            Deuda técnica</span></div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "El Baquiné de Angelitos Negros" (1977) — el álbum que cambió de formato, como
+                un Blue/Green</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S7 — AMBIENTES
+════════════════════════════════════════ -->
+        <div class="slide" id="s7">
+            <div class="slide-bg">
+                <div class="bg-slide-num">07</div>
+                <div
+                    style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(230,48,0,0.04) 0%,transparent 60%)">
+                </div>
+            </div>
+            <div class="slide-label">07 — Infraestructura</div>
+            <h2 style="margin-bottom:12px">Gestión de <span class="gold">Ambientes</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"El ensayo no es el concierto. El estudio no es el club. Cada ambiente tiene su propósito — y su
+                    público."</p>
+                <cite>— Willie Colón sobre los distintos escenarios · Metáfora de ambientes Dev→Prod</cite>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+                <div style="border-radius:10px;border:1px solid var(--border);overflow:hidden">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>AMBIENTE 🎭</th>
+                                <th>PROPÓSITO</th>
+                                <th>AUDIENCIA</th>
+                                <th>DATOS</th>
+                                <th>≈ ANALOGÍA SALSA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Local / Dev</td>
+                                <td>Desarrollo activo</td>
+                                <td>Desarrolladores</td>
+                                <td>Mock</td>
+                                <td>Práctica individual 🎵</td>
+                            </tr>
+                            <tr>
+                                <td>Integration</td>
+                                <td>Integración</td>
+                                <td>Devs</td>
+                                <td>Sintéticos</td>
+                                <td>Ensayo de sección 🎸</td>
+                            </tr>
+                            <tr>
+                                <td>QA / Testing</td>
+                                <td>Pruebas</td>
+                                <td>QA Engineers</td>
+                                <td>Prueba</td>
+                                <td>Ensayo general 🎷</td>
+                            </tr>
+                            <tr>
+                                <td>Staging</td>
+                                <td>Validación final</td>
+                                <td>QA + Product</td>
+                                <td>Anonimizados</td>
+                                <td>Concierto privado 🎺</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--accent3)">Production</td>
+                                <td>Usuarios reales</td>
+                                <td>Todos</td>
+                                <td>Reales</td>
+                                <td>Madison Square Garden 🌟</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>📜 Infrastructure as Code (IaC)</h3>
+                        <ul>
+                            <li>Terraform / Pulumi</li>
+                            <li>AWS CloudFormation</li>
+                            <li>Ansible (config mgmt.)</li>
+                            <li>Helm (Kubernetes)</li>
+                        </ul>
+                    </div>
+                    <div class="card green">
+                        <h3>🌊 GitOps — La partitura en Git</h3>
+                        <p style="margin-bottom:8px">Git como única fuente de verdad — como la partitura original que
+                            todos los músicos siguen:</p>
+                        <ul>
+                            <li>ArgoCD / Flux</li>
+                            <li>Reconciliación continua</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "Siembra" (1978) con Rubén Blades — el álbum más vendido de Fania, el
+                "production deploy" exitoso</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S8 — PRUEBAS
+════════════════════════════════════════ -->
+        <div class="slide" id="s8">
+            <div class="slide-bg">
+                <div class="bg-slide-num">08</div>
+                <div
+                    style="position:absolute;right:20px;top:50%;transform:translateY(-50%);opacity:0.05;font-size:8rem;pointer-events:none">
+                    🎶</div>
+            </div>
+            <div class="slide-label">08 — Calidad</div>
+            <h2 style="margin-bottom:12px">Pruebas en el <span class="gold">Ciclo de Releases</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"Un músico que no practica las escalas no puede improvisar en escena. Un dev que no escribe tests no
+                    puede hacer deployar en producción."</p>
+                <cite>— La disciplina de Willie Colón ↔ Shift-Left Testing</cite>
+            </div>
+            <div class="grid-2" style="flex:1;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                    <div class="card">
+                        <h3>🔺 Pirámide de Pruebas <span style="font-size:0.7rem;color:var(--text-muted)">(Mike
+                                Cohn)</span></h3>
+                        <p style="margin-top:8px"><strong class="gold">Base — Unit Tests:</strong> Muchas, rápidas. Como
+                            practicar las escalas diariamente.<br><br><strong class="orange">Medio —
+                                Integration:</strong> Moderadas. Como ensayar con la sección de metales.<br><br><strong
+                                class="red">Cima — E2E:</strong> Pocas, lentas. Como el ensayo general completo antes
+                            del show.</p>
+                    </div>
+                    <div class="card gold-card">
+                        <h3>⬅️ Shift-Left Testing</h3>
+                        <p>Detectar errores temprano — como Willie corrigiendo una nota en ensayo, no en el concierto.
+                        </p>
+                        <div
+                            style="margin-top:8px;display:flex;gap:14px;font-family:'Space Mono',monospace;font-size:11px">
+                            <span style="color:var(--accent3)">Ensayo: 1×</span><span style="color:var(--so)">QA:
+                                10×</span><span style="color:var(--sr)">Prod: 100×</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-radius:10px;border:1px solid var(--border);overflow:hidden;align-self:start">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ETAPA</th>
+                                <th>TIPO</th>
+                                <th>HERRAMIENTAS</th>
+                                <th>TIEMPO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pre-commit</td>
+                                <td>Linting, Unit</td>
+                                <td>Jest, pytest</td>
+                                <td>&lt; 1 min</td>
+                            </tr>
+                            <tr>
+                                <td>CI Build</td>
+                                <td>Unit + Integr.</td>
+                                <td>JUnit, Mockito</td>
+                                <td>5–15 min</td>
+                            </tr>
+                            <tr>
+                                <td>Staging</td>
+                                <td>E2E, Contract</td>
+                                <td>Cypress, Pact</td>
+                                <td>30–60 min</td>
+                            </tr>
+                            <tr>
+                                <td>Pre-prod</td>
+                                <td>Perf., Security</td>
+                                <td>k6, OWASP ZAP</td>
+                                <td>1–4 hrs</td>
+                            </tr>
+                            <tr>
+                                <td>Post-deploy</td>
+                                <td>Smoke, Synthetic</td>
+                                <td>Datadog Synth.</td>
+                                <td>&lt; 5 min</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ Willie Colón pasaba semanas perfeccionando arreglos antes de grabar — Shift-Left
+                en la salsa</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S9 — DEVSECOPS
+════════════════════════════════════════ -->
+        <div class="slide" id="s9">
+            <div class="slide-bg">
+                <div class="bg-slide-num">09</div>
+                <div
+                    style="position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--sr),transparent)">
+                </div>
+            </div>
+            <div class="slide-label">09 — DevSecOps</div>
+            <h2 style="margin-bottom:12px"><span class="gold">Seguridad</span> en el Pipeline</h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"El Bronx enseñó a Colón que hay que protegerse en cada esquina. En el pipeline, la seguridad va en
+                    cada etapa — no solo al final."</p>
+                <cite>— Shift-Left Security · Del Bronx a DevSecOps</cite>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>🔍 SAST</h3>
+                        <p>Análisis del código fuente. El inspector que revisa la partitura antes del ensayo.</p>
+                        <div style="margin-top:8px"><span class="tag">SonarQube</span> <span
+                                class="tag">Checkmarx</span></div>
+                    </div>
+                    <div class="card green">
+                        <h3>📦 SCA</h3>
+                        <p>Vulnerabilidades en dependencias. Verifica que los músicos invitados sean de confianza.</p>
+                        <div style="margin-top:8px"><span class="tag green">Snyk</span> <span class="tag green">Black
+                                Duck</span></div>
+                    </div>
+                    <div class="card purple">
+                        <h3>⚡ DAST</h3>
+                        <p>Pruebas en ejecución. El infiltrado que asiste al concierto buscando problemas.</p>
+                        <div style="margin-top:8px"><span class="tag purple">OWASP ZAP</span></div>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="card gold-card">
+                        <h3>🐳 Container Scanning</h3>
+                        <p>Vulnerabilidades en imágenes Docker. Revisa el instrumento antes de subirlo al escenario.</p>
+                        <div style="margin-top:8px"><span class="tag">Trivy</span> <span class="tag">Clair</span> <span
+                                class="tag">Checkov</span></div>
+                    </div>
+                    <div class="card">
+                        <h3>🏆 Framework SLSA (Google)</h3>
+                        <p>Supply-chain Levels for Software Artifacts. Como la cadena de custodia de un master de
+                            grabación:<br><span class="gold"><strong>L1</strong></span> Documentado · <span
+                                class="gold"><strong>L2</strong></span> Provenance · <span
+                                class="gold"><strong>L3</strong></span> Aislado · <span
+                                class="gold"><strong>L4</strong></span> Hermético</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "El Malo" no era malo por malo — era el que protegía al barrio. Eso es
+                DevSecOps.</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S10 — OBSERVABILIDAD
+════════════════════════════════════════ -->
+        <div class="slide" id="s10">
+            <div class="slide-bg">
+                <div class="bg-slide-num">10</div>
+                <svg class="groove-circles" style="right:-60px;bottom:-60px" width="300" height="300"
+                    viewBox="0 0 300 300">
+                    <circle cx="150" cy="150" r="140" />
+                    <circle cx="150" cy="150" r="100" />
+                    <circle cx="150" cy="150" r="60" />
+                </svg>
+            </div>
+            <div class="slide-label">10 — Observabilidad</div>
+            <h2 style="margin-bottom:12px">Monitoreo <span class="gold">Post-Release</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"El director de orquesta escucha todo — cada instrumento, cada desafinación. Sin observabilidad,
+                    diriges a ciegas."</p>
+                <cite>— Willie Colón era reconocido por su oído absoluto · Como el SRE en producción</cite>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+                <div class="grid-3">
+                    <div class="obs-card">
+                        <div class="obs-icon">📋</div>
+                        <h3>Logs 🎵</h3>
+                        <p>El pentagrama — cada nota registrada en orden cronológico</p>
+                        <div style="margin-top:8px"><span class="tag">ELK Stack</span> <span class="tag">Loki</span>
+                        </div>
+                    </div>
+                    <div class="obs-card">
+                        <div class="obs-icon">📊</div>
+                        <h3>Metrics 🥁</h3>
+                        <p>El metrónomo — mide el pulso del sistema constantemente</p>
+                        <div style="margin-top:8px"><span class="tag green">Prometheus</span> <span
+                                class="tag green">Datadog</span></div>
+                    </div>
+                    <div class="obs-card">
+                        <div class="obs-icon">🔍</div>
+                        <h3>Traces 🎺</h3>
+                        <p>El arreglo completo — sigue cada request por todos los servicios</p>
+                        <div style="margin-top:8px"><span class="tag purple">Jaeger</span> <span
+                                class="tag purple">X-Ray</span></div>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="card">
+                        <h3><span class="gold">SLI</span> — El Indicador 🎵</h3>
+                        <p>La nota específica a medir: latencia p99 &lt; 200ms</p>
+                    </div>
+                    <div class="card green">
+                        <h3><span style="color:var(--accent3)">SLO</span> — El Objetivo 🎯</h3>
+                        <p>La meta acordada: disponibilidad 99.9% del tiempo</p>
+                    </div>
+                    <div class="card gold-card">
+                        <h3><span class="gold">Error Budget</span> — El Tempo ⏱️</h3>
+                        <p>Tiempo permitido de desafine. Si se agota, pausar nuevos releases.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "Vigilante" (1983) — Willie Colón siempre estuvo observando, monitoring el
+                barrio</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S11 — MARCOS
+════════════════════════════════════════ -->
+        <div class="slide" id="s11">
+            <div class="slide-bg">
+                <div class="bg-slide-num">11</div>
+                <div
+                    style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.02) 0%,transparent 50%)">
+                </div>
+            </div>
+            <div class="slide-label">11 — Frameworks</div>
+            <h2 style="margin-bottom:12px">Marcos de <span class="gold">Referencia</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"Fania Records era el framework de la salsa: reglas, estructura, catálogo. Dentro de esas reglas, los
+                    artistas creaban libremente."</p>
+                <cite>— Fania como metáfora de ITIL/SAFe/DevOps</cite>
+            </div>
+            <div class="grid-2" style="flex:1;gap:12px">
+                <div class="card">
+                    <h3>📚 ITIL 4 — <span class="gold" style="font-size:0.75rem">El reglamento de Fania</span></h3>
+                    <p>Release Management dentro del SVS. Como el contrato de Fania: reglas claras para lanzar cada
+                        disco.</p>
+                    <ul style="margin-top:8px">
+                        <li>Release Policy y CAB</li>
+                        <li>Normal / Standard / Emergency Change</li>
+                        <li>Entry/Exit Criteria por ambiente</li>
+                        <li>Documentación y comunicación</li>
+                    </ul>
+                </div>
+                <div class="card green">
+                    <h3>🚂 SAFe — <span style="color:var(--accent3);font-size:0.75rem">La gira del Agile Release
+                            Train</span></h3>
+                    <p>Agile Release Train como la gira latinoamericana de Colón — coordinada, con fechas fijas y cada
+                        ciudad entregando valor.</p>
+                    <ul style="margin-top:8px">
+                        <li>Program Increment 8–12 semanas</li>
+                        <li>Release on Demand (deploy ≠ release)</li>
+                        <li>Inspect &amp; Adapt cada PI</li>
+                    </ul>
+                </div>
+                <div class="card purple">
+                    <h3>⚡ DevOps — <span style="color:#a78bfa;font-size:0.75rem">La fusión del Bronx</span></h3>
+                    <p>Como la fusión salsa-jazz de Colón: Dev y Ops colaborando, rompiendo barreras, creando algo
+                        nuevo.</p>
+                    <ul style="margin-top:8px">
+                        <li>Automatización end-to-end</li>
+                        <li>Feedback loops continuos</li>
+                        <li>Postmortems blameless</li>
+                    </ul>
+                </div>
+                <div class="card gold-card">
+                    <h3>🛡️ SRE — <span class="gold" style="font-size:0.75rem">El guardián del escenario</span></h3>
+                    <p>Site Reliability Engineering — como el tour manager de Colón: asegura que el show funcione sin
+                        importar qué pase.</p>
+                    <ul style="margin-top:8px">
+                        <li>Error budgets como gate</li>
+                        <li>Reducción de toil</li>
+                        <li>SLOs como contrato</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ Fania All Stars — el mayor framework colaborativo de la salsa, como el modelo
+                DevOps</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S12 — TENDENCIAS
+════════════════════════════════════════ -->
+        <div class="slide" id="s12">
+            <div class="slide-bg">
+                <div class="bg-slide-num">12</div>
+                <div
+                    style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(255,120,0,0.04) 0%,transparent 60%)">
+                </div>
+            </div>
+            <div class="slide-label">12 — Futuro</div>
+            <h2 style="margin-bottom:12px">Tendencias y <span class="gold">Futuro</span></h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"Colón nunca se quedó en el mismo sonido. La salsa evoluciona — y el software también. El que no
+                    cambia, queda en el pasado."</p>
+                <cite>— Willie Colón sobre la evolución · Tendencias en Release Management 2025–2030</cite>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;flex:1">
+                <div class="card" style="grid-column:span 2">
+                    <h3>🏗️ Platform Engineering — <span class="gold" style="font-size:0.75rem">El estudio de grabación
+                            propio</span></h3>
+                    <p>Las IDPs son como tener tu propio estudio — Colón fundó su propia disquera. Los devs hacen
+                        self-service sin depender de nadie.</p>
+                    <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap"><span class="tag">Backstage
+                            (Spotify)</span><span class="tag">Port</span><span class="tag">Cortex</span></div>
+                </div>
+                <div class="card green">
+                    <h3>🤖 AI-Assisted</h3>
+                    <ul>
+                        <li>Predicción de riesgo</li>
+                        <li>Anomaly detection</li>
+                        <li>Test generation</li>
+                        <li>Impact analysis</li>
+                    </ul>
+                </div>
+                <div class="card purple">
+                    <h3>🌊 GitOps Avanzado</h3>
+                    <ul>
+                        <li>Multi-cloud</li>
+                        <li>Progressive Delivery</li>
+                        <li>ArgoCD Rollouts</li>
+                        <li>Flux Flagger</li>
+                    </ul>
+                </div>
+                <div class="card gold-card">
+                    <h3>💰 FinOps</h3>
+                    <p>Costos cloud durante deploys. Como Colón calculando el costo de la gira.</p>
+                </div>
+                <div class="card">
+                    <h3>🔒 Supply Chain</h3>
+                    <p>SLSA L4, SBOM, Sigstore, Cosign — la cadena de custodia del master.</p>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "Fantasmas" (1981) — Colón anticipando el futuro, siempre un paso adelante</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S13 — CONCLUSIONES
+════════════════════════════════════════ -->
+        <div class="slide" id="s13">
+            <div class="slide-bg">
+                <div class="bg-slide-num">13</div>
+                <div
+                    style="position:absolute;right:20px;top:50%;transform:translateY(-50%);opacity:0.06;font-size:7rem;pointer-events:none;line-height:1">
+                    ♪<br>♫<br>♩</div>
+            </div>
+            <div class="slide-label">13 — Conclusiones</div>
+            <h2 style="margin-bottom:14px">Hallazgos <span class="gold">Clave</span></h2>
+            <div style="display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center">
+                <div class="concl-item">
+                    <div class="concl-num">🥁</div>
+                    <div class="concl-text"><strong>La automatización es imperativa.</strong> Como Colón automatizando
+                        los arreglos — los pipelines CI/CD eliminan el error humano y aceleran el time-to-market en un
+                        ~75%.</div>
+                </div>
+                <div class="concl-item">
+                    <div class="concl-num">🎺</div>
+                    <div class="concl-text"><strong>Releases pequeñas y frecuentes son más seguras.</strong> Como lanzar
+                        singles antes del álbum — menor riesgo, feedback inmediato, rollback simple.</div>
+                </div>
+                <div class="concl-item">
+                    <div class="concl-num">🎸</div>
+                    <div class="concl-text"><strong>Separar deploy de release agrega valor.</strong> El trombón ensaya
+                        (deploy) antes de que el público lo escuche (release). Feature Flags son el control maestro del
+                        volumen.</div>
+                </div>
+                <div class="concl-item">
+                    <div class="concl-num">🎵</div>
+                    <div class="concl-text"><strong>La observabilidad no es opcional.</strong> Sin oído absoluto — logs,
+                        métricas y trazas — no puedes dirigir la orquesta en producción.</div>
+                </div>
+                <div class="concl-item">
+                    <div class="concl-num">🌟</div>
+                    <div class="concl-text"><strong>La cultura importa tanto como la tecnología.</strong> Willie Colón
+                        unió el Bronx con Latinoamérica a través de la música. DevOps une Dev y Ops. Organizaciones
+                        élite: <strong>208× más deploys, 2,604× mejor MTTR</strong>.</div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "Che Che Colé" — el legado de Willie Colón, como el legado de una cultura DevOps
+                bien implementada</div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+     S14 — GITHUB ACTIONS PIPELINE
+════════════════════════════════════════ -->
+        <div class="slide" id="s14">
+            <div class="slide-bg">
+                <div class="bg-slide-num">14</div>
+                <div
+                    style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(230,48,0,0.03),transparent)">
+                </div>
+            </div>
+            <div class="slide-label">14 — Ejemplo Real</div>
+            <h2 style="margin-bottom:10px">Pipeline <span class="gold">GitHub Actions</span> — React App</h2>
+            <div class="quote-band" style="margin-bottom:10px">
+                <p>"Cada músico de la orquesta sigue la partitura — este es el YAML que dirige el pipeline React, como
+                    Willie dirigía a sus músicos."</p>
+                <cite>— El arreglo de Colón ↔ el workflow de GitHub Actions</cite>
+            </div>
+            <div class="code-slide-layout">
+                <div class="code-sidebar">
+                    <div class="code-sidebar-title">// 7 Jobs — La Orquesta</div>
+                    <button class="job-btn active" onclick="showJob('overview')">
+                        <div class="jb-name">📋 Visión General</div>
+                        <div class="jb-desc">Estructura y flujo de dependencias</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('install')">
+                        <div class="jb-name">📦 install 🥁</div>
+                        <div class="jb-desc">npm ci + caché — la base rítmica</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('lint')">
+                        <div class="jb-name">🔍 lint 🎸</div>
+                        <div class="jb-desc">ESLint + Prettier — afinación</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('test')">
+                        <div class="jb-name">🧪 test 🎵</div>
+                        <div class="jb-desc">Vitest + cobertura ≥ 80%</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('build')">
+                        <div class="jb-name">🏗️ build 🎼</div>
+                        <div class="jb-desc">Vite build + artefacto</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('security')">
+                        <div class="jb-name">🔒 security 🛡️</div>
+                        <div class="jb-desc">npm audit + Snyk SCA</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('staging')">
+                        <div class="jb-name">🚀 deploy-staging</div>
+                        <div class="jb-desc">S3 + CloudFront (develop)</div>
+                    </button>
+                    <button class="job-btn" onclick="showJob('prod')">
+                        <div class="jb-name">🌐 deploy-prod 🎉</div>
+                        <div class="jb-desc">S3 + Release tag (main)</div>
+                    </button>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-header">
+                        <div class="code-panel-dots"><span style="background:#f87171"></span><span
+                                style="background:#fbbf24"></span><span style="background:#34d399"></span></div>
+                        <div class="code-panel-filename">.github/workflows/<span
+                                style="color:var(--text)">pipeline.yml</span></div>
+                        <div class="code-panel-badge" id="job-badge">overview</div>
+                    </div>
+                    <div class="code-body">
+                        <div class="code-block visible" id="cb-overview">
+                            <pre>
+<span class="y-cmnt"># ────────────────────────────────────────────────────</span>
+<span class="y-cmnt">#  CI/CD Pipeline — React App con GitHub Actions</span>
+<span class="y-cmnt">#  ♪ Dirigido como la orquesta de Willie Colón</span>
+<span class="y-cmnt"># ────────────────────────────────────────────────────</span>
+
+<span class="y-key">name</span>: <span class="y-val">React CI/CD Pipeline</span>
+
+<span class="y-key">on</span>:
+  <span class="y-key">push</span>:
+    <span class="y-key">branches</span>: [<span class="y-val">main</span>, <span class="y-val">develop</span>]
+  <span class="y-key">pull_request</span>:
+    <span class="y-key">branches</span>: [<span class="y-val">main</span>, <span class="y-val">develop</span>]
+
+<span class="y-key">concurrency</span>:
+  <span class="y-key">group</span>: <span class="y-str">${'{'} github.workflow {'}'}-${'{'} github.ref {'}'}</span>
+  <span class="y-key">cancel-in-progress</span>: <span class="y-bool">true</span>
+
+<span class="y-key">env</span>:
+  <span class="y-key">NODE_VERSION</span>: <span class="y-str">'20.x'</span>
+  <span class="y-key">BUILD_DIR</span>: <span class="y-str">'dist'</span>
+
+<span class="y-cmnt"># ── Flujo ♪ ──────────────────────────────────────</span>
+<span class="y-cmnt">#</span>
+<span class="y-cmnt">#   install (🥁 base rítmica)</span>
+<span class="y-cmnt">#      ├── lint ──┐</span>
+<span class="y-cmnt">#      ├── test ──┴──► build ──► security</span>
+<span class="y-cmnt">#      └── security       ├── deploy-staging (develop)</span>
+<span class="y-cmnt">#                         └── deploy-prod    (main)</span>
+<span class="y-cmnt">#</span>
+<span class="y-key">jobs</span>:
+  <span class="y-head">install</span> <span class="y-cmnt"># 🥁 La clave — todo parte aquí</span>
+  <span class="y-head">lint</span>    <span class="y-cmnt"># 🎸 needs: install</span>
+  <span class="y-head">test</span>    <span class="y-cmnt"># 🎵 needs: install</span>
+  <span class="y-head">build</span>   <span class="y-cmnt"># 🎼 needs: [lint, test]</span>
+  <span class="y-head">security</span> <span class="y-cmnt"># 🛡️ needs: install</span>
+  <span class="y-head">deploy-staging</span> <span class="y-cmnt"># 🚀 needs: [build, security]</span>
+  <span class="y-head">deploy-production</span> <span class="y-cmnt"># 🎉 needs: [build, security]</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-install">
+                            <pre>
+<span class="y-head">  install</span>: <span class="y-cmnt"># 🥁 Base rítmica — todo depende de esto</span>
+    <span class="y-key">name</span>: <span class="y-str">📦 Install Dependencies</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-key">name</span>: <span class="y-val">Checkout</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-key">name</span>: <span class="y-val">Configurar Node.js</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/setup-node@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">node-version</span>: <span class="y-str">${'{'} env.NODE_VERSION {'}'}</span>
+          <span class="y-key">cache</span>: <span class="y-str">'npm'</span>
+      - <span class="y-key">name</span>: <span class="y-val">npm ci</span>
+        <span class="y-key">run</span>: <span class="y-val">npm ci</span>
+        <span class="y-cmnt">        # Más determinista que npm install en CI</span>
+      - <span class="y-key">name</span>: <span class="y-val">Cachear node_modules</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/cache@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">path</span>: <span class="y-val">node_modules</span>
+          <span class="y-key">key</span>: <span class="y-str">node-modules-${'{'} runner.os {'}'}-${'{'} hashFiles('package-lock.json') {'}'}</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-lint">
+                            <pre>
+<span class="y-head">  lint</span>: <span class="y-cmnt"># 🎸 Afinación — ESLint + Prettier</span>
+    <span class="y-key">name</span>: <span class="y-str">🔍 Lint &amp; Format</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: <span class="y-val">install</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/setup-node@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">node-version</span>: <span class="y-str">${'{'} env.NODE_VERSION {'}'}</span> }
+      - <span class="y-key">name</span>: <span class="y-val">Restaurar caché</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/cache@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">path</span>: <span class="y-val">node_modules</span>
+          <span class="y-key">key</span>: <span class="y-str">node-modules-${'{'} runner.os {'}'}-${'{'} hashFiles('package-lock.json') {'}'}</span>
+      - <span class="y-key">name</span>: <span class="y-val">ESLint</span>
+        <span class="y-key">run</span>: <span class="y-val">npm run lint</span>
+        <span class="y-cmnt">        # "eslint src --ext .js,.jsx,.ts,.tsx --max-warnings 0"</span>
+      - <span class="y-key">name</span>: <span class="y-val">Prettier check</span>
+        <span class="y-key">run</span>: <span class="y-val">npm run format:check</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-test">
+                            <pre>
+<span class="y-head">  test</span>: <span class="y-cmnt"># 🎵 El ensayo — cobertura mínima 80%</span>
+    <span class="y-key">name</span>: <span class="y-str">🧪 Unit Tests &amp; Coverage</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: <span class="y-val">install</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/setup-node@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">node-version</span>: <span class="y-str">${'{'} env.NODE_VERSION {'}'}</span> }
+      - <span class="y-key">name</span>: <span class="y-val">Restaurar caché</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/cache@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">path</span>: <span class="y-val">node_modules</span>
+          <span class="y-key">key</span>: <span class="y-str">node-modules-${'{'} runner.os {'}'}-${'{'} hashFiles('package-lock.json') {'}'}</span>
+      - <span class="y-key">name</span>: <span class="y-val">Tests + cobertura</span>
+        <span class="y-key">run</span>: <span class="y-val">npm run test:coverage</span>
+        <span class="y-key">env</span>: { <span class="y-key">CI</span>: <span class="y-bool">true</span> }
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/upload-artifact@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">name</span>: <span class="y-val">coverage-report</span>, <span class="y-key">path</span>: <span class="y-val">coverage/</span>, <span class="y-key">retention-days</span>: <span class="y-num">7</span> }
+      - <span class="y-key">name</span>: <span class="y-val">Verificar umbral ≥ 80%</span>
+        <span class="y-key">run</span>: |
+          <span class="y-val">COVERAGE=$(node -e "const j=require('./coverage/coverage-summary.json');</span>
+          <span class="y-val">  console.log(j.total.lines.pct)")</span>
+          <span class="y-val">if (( $(echo "$COVERAGE &lt; 80" | bc -l) )); then</span>
+            <span class="y-val">  echo "❌ Cobertura $COVERAGE% &lt; 80%"; exit 1</span>
+          <span class="y-val">fi; echo "✅ $COVERAGE% — Willie aprobaría esto"</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-build">
+                            <pre>
+<span class="y-head">  build</span>: <span class="y-cmnt"># 🎼 La grabación final — Vite build</span>
+    <span class="y-key">name</span>: <span class="y-str">🏗️ Build</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: [<span class="y-val">lint</span>, <span class="y-val">test</span>]
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/setup-node@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">node-version</span>: <span class="y-str">${'{'} env.NODE_VERSION {'}'}</span> }
+      - <span class="y-key">name</span>: <span class="y-val">Restaurar caché</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/cache@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">path</span>: <span class="y-val">node_modules</span>
+          <span class="y-key">key</span>: <span class="y-str">node-modules-${'{'} runner.os {'}'}-${'{'} hashFiles('package-lock.json') {'}'}</span>
+      - <span class="y-key">name</span>: <span class="y-val">Vite Build</span>
+        <span class="y-key">run</span>: <span class="y-val">npm run build</span>
+        <span class="y-key">env</span>:
+          <span class="y-key">VITE_API_URL</span>: <span class="y-str">${'{'} secrets.VITE_API_URL {'}'}</span>
+          <span class="y-key">VITE_APP_ENV</span>: <span class="y-str">${'{'} github.ref == 'refs/heads/main' &amp;&amp; 'production' || 'staging' {'}'}</span>
+      - <span class="y-key">name</span>: <span class="y-val">Subir artefacto del build</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/upload-artifact@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">name</span>: <span class="y-str">react-build-${'{'} github.sha {'}'}</span>
+          <span class="y-key">path</span>: <span class="y-str">${'{'} env.BUILD_DIR {'}'}/</span>
+          <span class="y-key">retention-days</span>: <span class="y-num">3</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-security">
+                            <pre>
+<span class="y-head">  security</span>: <span class="y-cmnt"># 🛡️ El guardián del barrio — npm audit + Snyk</span>
+    <span class="y-key">name</span>: <span class="y-str">🔒 Security Audit</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: <span class="y-val">install</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/setup-node@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">node-version</span>: <span class="y-str">${'{'} env.NODE_VERSION {'}'}</span> }
+      - <span class="y-key">name</span>: <span class="y-val">Restaurar caché</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/cache@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">path</span>: <span class="y-val">node_modules</span>
+          <span class="y-key">key</span>: <span class="y-str">node-modules-${'{'} runner.os {'}'}-${'{'} hashFiles('package-lock.json') {'}'}</span>
+      - <span class="y-key">name</span>: <span class="y-val">npm audit — El Malo del Bronx no permite vulnerabilidades HIGH</span>
+        <span class="y-key">run</span>: <span class="y-val">npm audit --audit-level=high</span>
+      - <span class="y-key">name</span>: <span class="y-val">Snyk SCA</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">snyk/actions/node@master</span>
+        <span class="y-key">continue-on-error</span>: <span class="y-bool">true</span>
+        <span class="y-key">env</span>: { <span class="y-key">SNYK_TOKEN</span>: <span class="y-str">${'{'} secrets.SNYK_TOKEN {'}'}</span> }
+        <span class="y-key">with</span>: { <span class="y-key">args</span>: <span class="y-val">--severity-threshold=high</span> }
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-staging">
+                            <pre>
+<span class="y-head">  deploy-staging</span>: <span class="y-cmnt"># 🚀 El club del barrio — prueba antes del Madison SQ</span>
+    <span class="y-key">name</span>: <span class="y-str">🚀 Deploy → Staging</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: [<span class="y-val">build</span>, <span class="y-val">security</span>]
+    <span class="y-key">if</span>: <span class="y-str">github.ref == 'refs/heads/develop' &amp;&amp; github.event_name == 'push'</span>
+    <span class="y-key">environment</span>:
+      <span class="y-key">name</span>: <span class="y-val">staging</span>
+      <span class="y-key">url</span>: <span class="y-val">https://staging.mi-app-react.com</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-key">name</span>: <span class="y-val">Descargar build</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/download-artifact@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">name</span>: <span class="y-str">react-build-${'{'} github.sha {'}'}</span>, <span class="y-key">path</span>: <span class="y-str">dist/</span> }
+      - <span class="y-anchor">uses</span>: <span class="y-val">aws-actions/configure-aws-credentials@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">aws-access-key-id</span>: <span class="y-str">${'{'} secrets.AWS_ACCESS_KEY_ID {'}'}</span>
+          <span class="y-key">aws-secret-access-key</span>: <span class="y-str">${'{'} secrets.AWS_SECRET_ACCESS_KEY {'}'}</span>
+          <span class="y-key">aws-region</span>: <span class="y-val">us-east-1</span>
+      - <span class="y-key">name</span>: <span class="y-val">S3 sync + cache headers</span>
+        <span class="y-key">run</span>: |
+          <span class="y-val">aws s3 sync dist/ s3://${'{'} secrets.S3_BUCKET_STAGING {'}'}/ \</span>
+            <span class="y-val">--delete --cache-control "public,max-age=31536000,immutable" \</span>
+            <span class="y-val">--exclude "index.html"</span>
+          <span class="y-val">aws s3 cp dist/index.html \</span>
+            <span class="y-val">s3://${'{'} secrets.S3_BUCKET_STAGING {'}'}/index.html \</span>
+            <span class="y-val">--cache-control "no-cache,no-store,must-revalidate"</span>
+      - <span class="y-key">name</span>: <span class="y-val">CloudFront invalidation</span>
+        <span class="y-key">run</span>: |
+          <span class="y-val">aws cloudfront create-invalidation \</span>
+            <span class="y-val">--distribution-id ${'{'} secrets.CF_DISTRIBUTION_STAGING {'}'} --paths "/*"</span>
+</pre>
+                        </div>
+                        <div class="code-block" id="cb-prod">
+                            <pre>
+<span class="y-head">  deploy-production</span>: <span class="y-cmnt"># 🎉 El Madison Square Garden — con aprobación manual</span>
+    <span class="y-key">name</span>: <span class="y-str">🌐 Deploy → Production</span>
+    <span class="y-key">runs-on</span>: <span class="y-val">ubuntu-latest</span>
+    <span class="y-anchor">needs</span>: [<span class="y-val">build</span>, <span class="y-val">security</span>]
+    <span class="y-key">if</span>: <span class="y-str">github.ref == 'refs/heads/main' &amp;&amp; github.event_name == 'push'</span>
+    <span class="y-key">environment</span>:
+      <span class="y-key">name</span>: <span class="y-val">production</span> <span class="y-cmnt"># ← activar "required reviewers"</span>
+      <span class="y-key">url</span>: <span class="y-val">https://mi-app-react.com</span>
+    <span class="y-key">steps</span>:
+      - <span class="y-anchor">uses</span>: <span class="y-val">actions/checkout@v4</span>
+      - <span class="y-key">name</span>: <span class="y-val">Descargar build</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/download-artifact@v4</span>
+        <span class="y-key">with</span>: { <span class="y-key">name</span>: <span class="y-str">react-build-${'{'} github.sha {'}'}</span>, <span class="y-key">path</span>: <span class="y-str">dist/</span> }
+      - <span class="y-anchor">uses</span>: <span class="y-val">aws-actions/configure-aws-credentials@v4</span>
+        <span class="y-key">with</span>:
+          <span class="y-key">aws-access-key-id</span>: <span class="y-str">${'{'} secrets.AWS_ACCESS_KEY_ID {'}'}</span>
+          <span class="y-key">aws-secret-access-key</span>: <span class="y-str">${'{'} secrets.AWS_SECRET_ACCESS_KEY {'}'}</span>
+          <span class="y-key">aws-region</span>: <span class="y-val">us-east-1</span>
+      - <span class="y-key">name</span>: <span class="y-val">S3 sync + CloudFront</span>
+        <span class="y-key">run</span>: |
+          <span class="y-val">aws s3 sync dist/ s3://${'{'} secrets.S3_BUCKET_PROD {'}'}/ \</span>
+            <span class="y-val">--delete --cache-control "public,max-age=31536000,immutable" \</span>
+            <span class="y-val">--exclude "index.html"</span>
+          <span class="y-val">aws s3 cp dist/index.html \</span>
+            <span class="y-val">s3://${'{'} secrets.S3_BUCKET_PROD {'}'}/index.html \</span>
+            <span class="y-val">--cache-control "no-cache,no-store,must-revalidate"</span>
+          <span class="y-val">aws cloudfront create-invalidation \</span>
+            <span class="y-val">--distribution-id ${'{'} secrets.CF_DISTRIBUTION_PROD {'}'} --paths "/*"</span>
+      - <span class="y-key">name</span>: <span class="y-val">🎉 Crear Release — como un nuevo álbum de Willie</span>
+        <span class="y-anchor">uses</span>: <span class="y-val">actions/create-release@v1</span>
+        <span class="y-key">env</span>: { <span class="y-key">GITHUB_TOKEN</span>: <span class="y-str">${'{'} secrets.GITHUB_TOKEN {'}'}</span> }
+        <span class="y-key">with</span>:
+          <span class="y-key">tag_name</span>: <span class="y-str">v${'{'} github.run_number {'}'}</span>
+          <span class="y-key">release_name</span>: <span class="y-str">Release v${'{'} github.run_number {'}'} 🎺</span>
+          <span class="y-key">draft</span>: <span class="y-bool">false</span>
+          <span class="y-key">prerelease</span>: <span class="y-bool">false</span>
+</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-fania-tag">♪ "El Juicio" — Willie Colón enfrenta a la industria. GitHub Actions enfrenta al
+                caos del software.</div>
+        </div>
+
+    </div><!-- slides-container -->
+
+    <!-- NAV -->
+    <div class="nav">
+        <button onclick="prevSlide()">← Prev</button>
+        <div class="progress-dots" id="dots"></div>
+        <span class="slide-counter" id="counter">1 / 14</span>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script src="/slides/administracion.js"></script>
+    <script>
+    // Set vinyl cover src from VINYL_URI constant
+    (function(){
+        const img = document.getElementById('cover-vinyl');
+        if (img && typeof VINYL_URI !== 'undefined') img.src = VINYL_URI;
+        // Also update audio time display
+        const audio = document.getElementById('salsa-audio');
+        const timeEl = document.getElementById('audio-time');
+        if (audio && timeEl) {
+            audio.addEventListener('timeupdate', function(){
+                const m = Math.floor(audio.currentTime/60);
+                const s = String(Math.floor(audio.currentTime%60)).padStart(2,'0');
+                timeEl.textContent = m+':'+s;
+            });
+        }
+    })();
+    </script>
+</body>
+
+</html>
